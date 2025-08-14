@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   authors: [{ name: 'QUEET WEED TEAM' }],
   manifest: '/manifest.json',
   icons: {
-    icon: '/icon.svg',
+    icon: '/icon-192x192.png',
     apple: '/apple-touch-icon.png',
   },
   appleWebApp: {
