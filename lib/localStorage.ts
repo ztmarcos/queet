@@ -115,6 +115,8 @@ export const progressStorage = {
       totalDays: 0,
       lastResetDate: new Date().toISOString(),
       smokingHits: 0,
+      dailyHits: 0,
+      lastHitDate: new Date().toISOString(),
       triggers: [],
       achievements: [],
     }
