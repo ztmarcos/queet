@@ -45,7 +45,11 @@ export function useAuth() {
       let savedUser = userStorage.get()
       if (!savedUser) {
         // Create a default user
-        savedUser = { email: 'user@queet.app', name: 'Queet User' }
+        savedUser = { 
+          id: 'default-user',
+          email: 'user@queet.app', 
+          createdAt: new Date().toISOString()
+        }
         userStorage.set(savedUser)
       }
       const mockUser = createMockUser(savedUser.email)
