@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   manifest: '/manifest.json',
   icons: {
     icon: '/icon.svg',
-    apple: '/icon.svg',
+    apple: '/apple-touch-icon.png',
   },
   appleWebApp: {
     capable: true,
@@ -51,7 +51,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#000000" />
         <meta name="apple-touch-fullscreen" content="yes" />
         <meta name="apple-mobile-web-app-orientations" content="portrait" />
-        <link rel="apple-touch-startup-image" href="/icon.svg" />
+        <link rel="apple-touch-startup-image" href="/apple-touch-icon.png" />
       </head>
       <body className="font-mono bg-black text-white">
         <div className="min-h-screen bg-black">
