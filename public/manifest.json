@@ -1,24 +1,23 @@
 {
-  "name": "Queet Weed - Deja de fumar marihuana",
-  "short_name": "Queet Weed",
+  "name": "QUEET WEED - Deja de fumar marihuana",
+  "short_name": "QUEET WEED",
   "description": "Tu compañero para dejar de fumar marihuana de forma saludable",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#0ea5e9",
+  "background_color": "#000000",
+  "theme_color": "#000000",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/icon-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
     },
     {
-      "src": "/icon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "src": "/favicon.ico",
+      "sizes": "16x16 32x32",
+      "type": "image/x-icon"
     }
   ],
   "categories": ["health", "lifestyle", "medical"],
