@@ -169,7 +169,7 @@ export default function Dashboard() {
             
             <div className="flex justify-between items-center">
               <span className="text-white font-mono uppercase tracking-wider">{t.dashboard.triggersRegistered}</span>
-              <span className="font-mono font-bold text-white">{progress.triggers.length}</span>
+              <span className="font-mono font-bold text-white">{progress.triggers?.length || 0}</span>
             </div>
             
             <div className="flex justify-between items-center">

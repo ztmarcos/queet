@@ -1,10 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    appDir: true,
-  },
   env: {
-    PORT: process.env.PORT || 3000,
+    PORT: process.env.PORT || '3000',
   },
   async headers() {
     return [

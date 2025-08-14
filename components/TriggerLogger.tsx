@@ -252,7 +252,7 @@ export default function TriggerLogger() {
       </motion.div>
 
       {/* Trigger Statistics */}
-      {progress?.triggers.length > 0 && (
+      {progress?.triggers?.length > 0 && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -265,9 +265,9 @@ export default function TriggerLogger() {
           </h3>
 
           <div className="space-y-3">
-            {triggerTypes.map((type) => {
-              const count = progress.triggers.filter(t => t.type === type.id).length
-              const percentage = progress.triggers.length > 0 ? (count / progress.triggers.length) * 100 : 0
+                          {triggerTypes.map((type) => {
+                const count = progress?.triggers?.filter(t => t.type === type.id).length || 0
+                const percentage = progress?.triggers?.length > 0 ? (count / (progress.triggers?.length || 1)) * 100 : 0
               
               return count > 0 ? (
                 <div key={type.id} className="flex items-center justify-between">
