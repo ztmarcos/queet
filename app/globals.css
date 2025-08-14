@@ -1,0 +1,200 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 255, 255, 255;
+  --background-end-rgb: 240, 240, 240;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 20, 20, 20;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  font-family: 'JetBrains Mono', monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #000000;
+  color: #ffffff;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Mobile-first styles */
+@media (max-width: 768px) {
+  .mobile-container {
+    padding: 1rem;
+    max-width: 100%;
+  }
+  
+  .mobile-card {
+    border-radius: 0;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    border: 2px solid #ffffff;
+    background: #000000;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ffffff;
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #cccccc;
+}
+
+/* Animation classes */
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to { 
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Progress bar styles */
+.progress-bar {
+  background: #ffffff;
+  transition: width 0.3s ease;
+}
+
+/* Button styles - Brutalist */
+.btn-primary {
+  @apply bg-white text-black font-bold py-4 px-8 border-2 border-white hover:bg-black hover:text-white transition-all duration-200 uppercase tracking-wider text-sm;
+}
+
+.btn-secondary {
+  @apply bg-black text-white font-bold py-4 px-8 border-2 border-white hover:bg-white hover:text-black transition-all duration-200 uppercase tracking-wider text-sm;
+}
+
+.btn-success {
+  @apply bg-white text-black font-bold py-4 px-8 border-2 border-white hover:bg-black hover:text-white transition-all duration-200 uppercase tracking-wider text-sm;
+}
+
+/* Card styles - Brutalist */
+.card {
+  @apply bg-black border-2 border-white p-6;
+}
+
+.card-mobile {
+  @apply bg-black border-2 border-white p-4;
+}
+
+/* Brutalist typography */
+.brutalist-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.brutalist-heading {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  line-height: 1.2;
+}
+
+/* Brutalist gradients */
+.brutalist-gradient {
+  background: linear-gradient(45deg, #000000 0%, #ffffff 50%, #000000 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Brutalist borders */
+.brutalist-border {
+  border: 3px solid #ffffff;
+  box-shadow: 4px 4px 0px #ffffff;
+}
+
+.brutalist-border:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px #ffffff;
+}
+
+/* Brutalist input styles */
+.brutalist-input {
+  @apply bg-black border-2 border-white text-white font-mono p-3 focus:outline-none focus:border-white focus:ring-0;
+}
+
+/* Brutalist toggle switch */
+.brutalist-toggle {
+  @apply relative inline-flex items-center h-6 w-11 bg-black border-2 border-white;
+}
+
+.brutalist-toggle-checked {
+  @apply bg-white;
+}
+
+.brutalist-toggle-thumb {
+  @apply inline-block w-4 h-4 bg-white transform transition-transform;
+}
+
+.brutalist-toggle-checked .brutalist-toggle-thumb {
+  @apply translate-x-5 bg-black;
+}
