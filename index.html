@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="QUEET WEED">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="apple-mobile-web-app-orientations" content="portrait">
+    
+    <title>QUEET WEED - DEJA DE FUMAR MARIHUANA</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #000000;
+            color: #ffffff;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* iPhone optimizations */
+        @supports (-webkit-touch-callout: none) {
+            .safe-area-inset {
+                padding-top: env(safe-area-inset-top);
+                padding-bottom: env(safe-area-inset-bottom);
+                padding-left: env(safe-area-inset-left);
+                padding-right: env(safe-area-inset-right);
+            }
+        }
+
+        /* Prevent zoom on input focus for iOS */
+        @media screen and (-webkit-min-device-pixel-ratio: 0) {
+            input, select, textarea {
+                font-size: 16px !important;
+            }
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            opacity: 0.7;
+        }
+
+        .card {
+            background-color: #000000;
+            border: 3px solid #ffffff;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 4px 4px 0px #ffffff;
+        }
+
+        .main-stats {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .streak-number {
+            font-size: 60px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .streak-label {
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            opacity: 0.8;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: "■";
+            margin-right: 10px;
+        }
+
+        .button {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ffffff;
+            background-color: #ffffff;
+            color: #000000;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 10px;
+            min-height: 44px;
+        }
+
+        .button:hover {
+            background-color: #000000;
+            color: #ffffff;
+        }
+
+        .button.secondary {
+            background-color: #000000;
+            color: #ffffff;
+        }
+
+        .button.secondary:hover {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        .button.danger {
+            background-color: #ff0000;
+            color: #ffffff;
+            border-color: #ff0000;
+        }
+
+        .button.danger:hover {
+            background-color: #cc0000;
+        }
+
+        .button-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .stats-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #333;
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label-small {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .stat-value {
+            font-weight: bold;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background-color: #000000;
+            border: 3px solid #ffffff;
+            padding: 20px;
+            max-width: 350px;
+            width: 100%;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 15px;
+        }
+
+        .modal-text {
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .modal-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #000000;
+            color: #ffffff;
+            border: 2px solid #ffffff;
+            padding: 10px 20px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            z-index: 1001;
+            display: none;
+        }
+
+        .language-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #000000;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 8px 12px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        .language-toggle:hover {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .stats-grid {
+                gap: 10px;
+            }
+            
+            .stat-number {
+                font-size: 20px;
+            }
+            
+            .stat-label {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="language-toggle" onclick="toggleLanguage()">ES/EN</div>
+    
+    <div class="container safe-area-inset">
+        <!-- Header -->
+        <div class="header">
+            <div class="title">QUEET WEED</div>
+            <div class="subtitle" id="subtitle">SIN FUMAR MARIHUANA</div>
+        </div>
+
+        <!-- Main Stats -->
+        <div class="card">
+            <div class="main-stats">
+                <div class="streak-number" id="currentStreak">0</div>
+                <div class="streak-label" id="daysLabel">DÍAS</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" id="longestStreak">0</div>
+                    <div class="stat-label" id="bestStreakLabel">MEJOR RACHA</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalDays">0</div>
+                    <div class="stat-label" id="totalDaysLabel">TOTAL DÍAS</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalHits">0</div>
+                    <div class="stat-label" id="hitsLabel">FUMADAS</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="dailyHits">0</div>
+                    <div class="stat-label" id="todayLabel">HOY</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card">
+            <div class="section-title" id="quickActionsLabel">ACCIONES RÁPIDAS</div>
+            
+            <button class="button" onclick="logSmoking()" id="smokeButton">FUMÉ</button>
+            
+            <div class="button-row">
+                <button class="button secondary" onclick="subtractHit()" id="subtractButton">-1 FUMADA</button>
+                <button class="button secondary" onclick="resetAchievements()" id="resetAchievementsButton">RESET LOGROS</button>
+            </div>
+            
+            <button class="button danger" onclick="showResetConfirm()" id="resetButton">REINICIAR</button>
+        </div>
+
+        <!-- Statistics -->
+        <div class="card">
+            <div class="section-title" id="statsLabel">ESTADÍSTICAS</div>
+            
+            <div class="stats-list">
+                <div class="stat-row">
+                    <span class="stat-label-small" id="startDateLabel">FECHA DE INICIO:</span>
+                    <span class="stat-value" id="startDate">-</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label-small" id="daysSinceLabel">DÍAS DESDE INICIO:</span>
+                    <span class="stat-value" id="daysSince">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label-small" id="triggersLabel">TRIGGERS:</span>
+                    <span class="stat-value" id="triggersCount">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label-small" id="achievementsLabel">LOGROS:</span>
+                    <span class="stat-value" id="achievementsCount">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Motivation -->
+        <div class="card">
+            <div style="text-align: center;">
+                <div style="font-size: 32px; margin-bottom: 15px;">❤️</div>
+                <div style="font-style: italic; text-transform: uppercase; letter-spacing: 0.1em; line-height: 1.5;" id="motivationText">
+                    "CADA DÍA QUE PASAS SIN FUMAR ES UN PASO HACIA UNA VIDA MÁS SALUDABLE Y LIBRE."
+                </div>
+                <div style="font-size: 12px; margin-top: 10px; text-transform: uppercase; letter-spacing: 0.1em;">- QUEET WEED</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reset Confirmation Modal -->
+    <div class="modal" id="resetModal">
+        <div class="modal-content">
+            <div class="modal-title" id="resetTitle">¿REINICIAR TODO?</div>
+            <div class="modal-text" id="resetText">
+                Esta acción reiniciará completamente tu progreso:
+                <br>• Días sin fumar: 0
+                <br>• Contador de fumadas: 0
+                <br>• Mejor racha: 0
+                <br>• Fecha de inicio: hoy
+                <br><br>
+                Esta acción no se puede deshacer.
+            </div>
+            <div class="modal-buttons">
+                <button class="button secondary" onclick="hideResetConfirm()" id="cancelButton">CANCELAR</button>
+                <button class="button danger" onclick="confirmReset()" id="confirmButton">REINICIAR TODO</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // App State
+        let appState = {
+            currentStreak: 0,
+            longestStreak: 0,
+            totalDays: 0,
+            totalHits: 0,
+            dailyHits: 0,
+            startDate: new Date().toISOString(),
+            lastResetDate: new Date().toISOString(),
+            lastHitDate: new Date().toISOString(),
+            triggers: [],
+            achievements: [],
+            language: 'es'
+        };
+
+        // Translations
+        const translations = {
+            es: {
+                subtitle: 'SIN FUMAR MARIHUANA',
+                daysLabel: 'DÍAS',
+                bestStreakLabel: 'MEJOR RACHA',
+                totalDaysLabel: 'TOTAL DÍAS',
+                hitsLabel: 'FUMADAS',
+                todayLabel: 'HOY',
+                quickActionsLabel: 'ACCIONES RÁPIDAS',
+                smokeButton: 'FUMÉ',
+                subtractButton: '-1 FUMADA',
+                resetAchievementsButton: 'RESET LOGROS',
+                resetButton: 'REINICIAR',
+                statsLabel: 'ESTADÍSTICAS',
+                startDateLabel: 'FECHA DE INICIO:',
+                daysSinceLabel: 'DÍAS DESDE INICIO:',
+                triggersLabel: 'TRIGGERS:',
+                achievementsLabel: 'LOGROS:',
+                resetTitle: '¿REINICIAR TODO?',
+                resetText: 'Esta acción reiniciará completamente tu progreso:\n• Días sin fumar: 0\n• Contador de fumadas: 0\n• Mejor racha: 0\n• Fecha de inicio: hoy\n\nEsta acción no se puede deshacer.',
+                cancelButton: 'CANCELAR',
+                confirmButton: 'REINICIAR TODO',
+                smokeLogged: 'Incidente registrado - Streak reiniciado',
+                hitSubtracted: 'Fumada restada',
+                achievementsReset: 'Logros reiniciados',
+                progressReset: 'Progreso reiniciado'
+            },
+            en: {
+                subtitle: 'WITHOUT SMOKING MARIJUANA',
+                daysLabel: 'DAYS',
+                bestStreakLabel: 'BEST STREAK',
+                totalDaysLabel: 'TOTAL DAYS',
+                hitsLabel: 'HIT',
+                todayLabel: 'TODAY',
+                quickActionsLabel: 'QUICK ACTIONS',
+                smokeButton: 'SMOKED',
+                subtractButton: 'SUBTRACT 1 HIT',
+                resetAchievementsButton: 'RESET ACHIEVEMENTS',
+                resetButton: 'RESET',
+                statsLabel: 'STATISTICS',
+                startDateLabel: 'START DATE:',
+                daysSinceLabel: 'DAYS SINCE START:',
+                triggersLabel: 'TRIGGERS:',
+                achievementsLabel: 'ACHIEVEMENTS:',
+                resetTitle: 'RESET EVERYTHING?',
+                resetText: 'This action will completely reset your progress:\n• Days without smoking: 0\n• Smoking counter: 0\n• Best streak: 0\n• Start date: today\n\nThis action cannot be undone.',
+                cancelButton: 'CANCEL',
+                confirmButton: 'RESET EVERYTHING',
+                smokeLogged: 'Incident logged - Streak reset',
+                hitSubtracted: 'Hit subtracted',
+                achievementsReset: 'Achievements reset',
+                progressReset: 'Progress reset'
+            }
+        };
+
+        // Initialize app
+        function initApp() {
+            loadState();
+            updateDisplay();
+            checkAchievements();
+            setInterval(autoUpdateStreak, 60000); // Check every minute
+        }
+
+        // Load state from localStorage
+        function loadState() {
+            const saved = localStorage.getItem('queet-weed-state');
+            if (saved) {
+                appState = { ...appState, ...JSON.parse(saved) };
+            }
+            
+            const savedLanguage = localStorage.getItem('queet-weed-language');
+            if (savedLanguage) {
+                appState.language = savedLanguage;
+            }
+        }
+
+        // Save state to localStorage
+        function saveState() {
+            localStorage.setItem('queet-weed-state', JSON.stringify(appState));
+            localStorage.setItem('queet-weed-language', appState.language);
+        }
+
+        // Update display
+        function updateDisplay() {
+            const t = translations[appState.language];
+            
+            document.getElementById('currentStreak').textContent = appState.currentStreak;
+            document.getElementById('longestStreak').textContent = appState.longestStreak;
+            document.getElementById('totalDays').textContent = appState.totalDays;
+            document.getElementById('totalHits').textContent = appState.totalHits;
+            document.getElementById('dailyHits').textContent = appState.dailyHits;
+            
+            document.getElementById('subtitle').textContent = t.subtitle;
+            document.getElementById('daysLabel').textContent = t.daysLabel;
+            document.getElementById('bestStreakLabel').textContent = t.bestStreakLabel;
+            document.getElementById('totalDaysLabel').textContent = t.totalDaysLabel;
+            document.getElementById('hitsLabel').textContent = t.hitsLabel;
+            document.getElementById('todayLabel').textContent = t.todayLabel;
+            document.getElementById('quickActionsLabel').textContent = t.quickActionsLabel;
+            document.getElementById('smokeButton').textContent = t.smokeButton;
+            document.getElementById('subtractButton').textContent = t.subtractButton;
+            document.getElementById('resetAchievementsButton').textContent = t.resetAchievementsButton;
+            document.getElementById('resetButton').textContent = t.resetButton;
+            document.getElementById('statsLabel').textContent = t.statsLabel;
+            document.getElementById('startDateLabel').textContent = t.startDateLabel;
+            document.getElementById('daysSinceLabel').textContent = t.daysSinceLabel;
+            document.getElementById('triggersLabel').textContent = t.triggersLabel;
+            document.getElementById('achievementsLabel').textContent = t.achievementsLabel;
+            
+            // Update dates and counts
+            const startDate = new Date(appState.startDate);
+            document.getElementById('startDate').textContent = startDate.toLocaleDateString();
+            
+            const daysSince = Math.floor((new Date().getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+            document.getElementById('daysSince').textContent = daysSince;
+            
+            document.getElementById('triggersCount').textContent = appState.triggers.length;
+            document.getElementById('achievementsCount').textContent = appState.achievements.length;
+        }
+
+        // Log smoking incident
+        function logSmoking() {
+            const today = new Date();
+            const lastHitDate = new Date(appState.lastHitDate);
+            const isNewDay = today.toDateString() !== lastHitDate.toDateString();
+            
+            appState.currentStreak = 0;
+            appState.totalHits += 1;
+            appState.dailyHits = isNewDay ? 1 : appState.dailyHits + 1;
+            appState.lastHitDate = today.toISOString();
+            appState.lastResetDate = today.toISOString();
+            
+            saveState();
+            updateDisplay();
+            showToast(translations[appState.language].smokeLogged);
+        }
+
+        // Subtract hit
+        function subtractHit() {
+            if (appState.totalHits > 0) {
+                appState.totalHits = Math.max(0, appState.totalHits - 1);
+                appState.dailyHits = Math.max(0, appState.dailyHits - 1);
+                saveState();
+                updateDisplay();
+                showToast(translations[appState.language].hitSubtracted);
+            }
+        }
+
+        // Reset achievements
+        function resetAchievements() {
+            appState.achievements = [];
+            saveState();
+            updateDisplay();
+            showToast(translations[appState.language].achievementsReset);
+        }
+
+        // Show reset confirmation
+        function showResetConfirm() {
+            document.getElementById('resetModal').style.display = 'flex';
+            const t = translations[appState.language];
+            document.getElementById('resetTitle').textContent = t.resetTitle;
+            document.getElementById('resetText').textContent = t.resetText;
+            document.getElementById('cancelButton').textContent = t.cancelButton;
+            document.getElementById('confirmButton').textContent = t.confirmButton;
+        }
+
+        // Hide reset confirmation
+        function hideResetConfirm() {
+            document.getElementById('resetModal').style.display = 'none';
+        }
+
+        // Confirm reset
+        function confirmReset() {
+            const today = new Date();
+            appState = {
+                currentStreak: 0,
+                longestStreak: 0,
+                totalDays: 0,
+                totalHits: 0,
+                dailyHits: 0,
+                startDate: today.toISOString(),
+                lastResetDate: today.toISOString(),
+                lastHitDate: today.toISOString(),
+                triggers: [],
+                achievements: [],
+                language: appState.language
+            };
+            
+            saveState();
+            updateDisplay();
+            hideResetConfirm();
+            showToast(translations[appState.language].progressReset);
+        }
+
+        // Auto update streak
+        function autoUpdateStreak() {
+            const today = new Date();
+            const lastReset = new Date(appState.lastResetDate);
+            const lastHit = new Date(appState.lastHitDate);
+            
+            const daysSinceLastReset = Math.floor((today.getTime() - lastReset.getTime()) / (1000 * 60 * 60 * 24));
+            const hadHitsToday = today.toDateString() === lastHit.toDateString() && appState.dailyHits > 0;
+            
+            // Only auto-update if a full day has passed AND no hits today
+            if (daysSinceLastReset >= 1 && !hadHitsToday) {
+                appState.currentStreak += daysSinceLastReset;
+                appState.longestStreak = Math.max(appState.currentStreak, appState.longestStreak);
+                appState.totalDays = Math.floor((today.getTime() - new Date(appState.startDate).getTime()) / (1000 * 60 * 60 * 24));
+                appState.lastResetDate = today.toISOString();
+                
+                saveState();
+                updateDisplay();
+                checkAchievements();
+            }
+            
+            // Reset daily hits if it's a new day
+            const isNewDay = today.toDateString() !== lastHit.toDateString();
+            if (isNewDay && appState.dailyHits > 0) {
+                appState.dailyHits = 0;
+                saveState();
+                updateDisplay();
+            }
+        }
+
+        // Check achievements
+        function checkAchievements() {
+            const existingTitles = appState.achievements.map(a => a.title);
+            const newAchievements = [];
+            
+            if (appState.currentStreak === 1 && !existingTitles.includes('Primer día')) {
+                newAchievements.push({
+                    id: `achievement-${Date.now()}-1`,
+                    title: 'Primer día',
+                    description: '¡Completaste tu primer día sin fumar!',
+                    date: new Date().toISOString(),
+                    type: 'streak'
+                });
+            }
+            
+            if (appState.currentStreak === 7 && !existingTitles.includes('Una semana')) {
+                newAchievements.push({
+                    id: `achievement-${Date.now()}-7`,
+                    title: 'Una semana',
+                    description: '¡Una semana completa sin fumar!',
+                    date: new Date().toISOString(),
+                    type: 'streak'
+                });
+            }
+            
+            if (appState.currentStreak === 30 && !existingTitles.includes('Un mes')) {
+                newAchievements.push({
+                    id: `achievement-${Date.now()}-30`,
+                    title: 'Un mes',
+                    description: '¡Un mes completo sin fumar!',
+                    date: new Date().toISOString(),
+                    type: 'streak'
+                });
+            }
+            
+            if (newAchievements.length > 0) {
+                appState.achievements = [...appState.achievements, ...newAchievements];
+                saveState();
+                updateDisplay();
+                
+                newAchievements.forEach(achievement => {
+                    showToast(`🎉 ${achievement.title}: ${achievement.description}`);
+                });
+            }
+        }
+
+        // Toggle language
+        function toggleLanguage() {
+            appState.language = appState.language === 'es' ? 'en' : 'es';
+            saveState();
+            updateDisplay();
+        }
+
+        // Show toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // Initialize app when page loads
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>

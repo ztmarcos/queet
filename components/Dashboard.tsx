@@ -46,7 +46,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-black text-white safe-area-inset">
-      <div className="container mx-auto px-4 py-6 max-w-md">
+      <div className="container mx-auto px-4 py-6 max-w-md md:max-w-2xl">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}

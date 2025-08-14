@@ -1,10 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  images: {
-    domains: ['firebasestorage.googleapis.com'],
+  experimental: {
+    appDir: true,
   },
   env: {
-    CUSTOM_KEY: process.env.CUSTOM_KEY,
+    PORT: process.env.PORT || 3000,
   },
   async headers() {
     return [
