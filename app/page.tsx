@@ -12,12 +12,16 @@ import LoginForm from '@/components/LoginForm'
 import { useAuth } from '@/hooks/useAuth'
 import { useLanguage } from '@/hooks/useLanguage'
 import { useTranslations } from '@/lib/i18n'
+import { useServiceWorker } from '@/hooks/useServiceWorker'
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState('dashboard')
-  const { user, loading } = useAuth()
+  const { user, loading: authLoading } = useAuth()
   const { language } = useLanguage()
   const t = useTranslations(language)
+  const [activeTab, setActiveTab] = useState('dashboard')
+  
+  // Register service worker for PWA functionality
+  useServiceWorker()
 
   const tabs = [
     { id: 'dashboard', label: t.nav.dashboard, icon: TrendingUp },
@@ -27,7 +31,7 @@ export default function Home() {
     { id: 'settings', label: t.nav.settings, icon: Settings },
   ]
 
-  if (loading) {
+  if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-black">
         <div className="text-center">
