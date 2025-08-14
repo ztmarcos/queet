@@ -20,6 +20,25 @@ export default function Home() {
   // Register service worker for PWA functionality
   useServiceWorker()
 
+  useEffect(() => {
+    // Clear any cached manifest and force refresh
+    if ('caches' in window) {
+      caches.keys().then(cacheNames => {
+        cacheNames.forEach(cacheName => {
+          if (cacheName.includes('queet-weed')) {
+            caches.delete(cacheName);
+          }
+        });
+      });
+    }
+    
+    // Force reload manifest
+    const link = document.querySelector('link[rel="manifest"]');
+    if (link) {
+      link.setAttribute('href', '/manifest.json?v=' + Date.now());
+    }
+  }, []);
+
   const tabs = [
     { id: 'dashboard', label: t.nav.dashboard, icon: TrendingUp },
     { id: 'progress', label: t.nav.progress, icon: Target },
