@@ -1,29 +1,38 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   env: {
-    PORT: process.env.PORT || '3000',
+    PORT: '3000'
   },
   async headers() {
     return [
       {
-        source: '/(.*)',
+        source: '/manifest.json',
         headers: [
           {
-            key: 'X-Frame-Options',
-            value: 'DENY',
+            key: 'Cache-Control',
+            value: 'no-cache, no-store, must-revalidate'
           },
           {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
+            key: 'Pragma',
+            value: 'no-cache'
           },
           {
-            key: 'Referrer-Policy',
-            value: 'origin-when-cross-origin',
-          },
-        ],
+            key: 'Expires',
+            value: '0'
+          }
+        ]
       },
+      {
+        source: '/icon-:size.png',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable'
+          }
+        ]
+      }
     ]
-  },
+  }
 }
 
 module.exports = nextConfig

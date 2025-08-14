@@ -1,14 +1,15 @@
-const CACHE_NAME = 'queet-weed-v1.0.0';
+const CACHE_NAME = 'queet-weed-v2';
 const urlsToCache = [
   '/',
   '/manifest.json',
-  '/favicon.ico',
-  '/apple-touch-icon.png',
+  '/icon.svg',
   '/icon-192x192.png',
-  '/icon-512x512.png'
+  '/icon-512x512.png',
+  '/apple-touch-icon.png',
+  '/favicon.ico',
+  '/sw.js'
 ];
 
-// Install event - cache resources
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -19,19 +20,20 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Fetch event - serve from cache when offline
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
         // Return cached version or fetch from network
-        return response || fetch(event.request);
+        if (response) {
+          return response;
+        }
+        return fetch(event.request);
       }
     )
   );
 });
 
-// Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {

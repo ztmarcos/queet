@@ -52,6 +52,10 @@ export default function RootLayout({
         <meta name="apple-touch-fullscreen" content="yes" />
         <meta name="apple-mobile-web-app-orientations" content="portrait" />
         <link rel="apple-touch-startup-image" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/manifest.json" crossOrigin="use-credentials" />
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
       </head>
       <body className="font-mono bg-black text-white">
         <div className="min-h-screen bg-black">
