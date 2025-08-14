@@ -40,13 +40,16 @@ export function useAuth() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // For development, use local storage
-    if (process.env.NODE_ENV === 'development' && !process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
-      const savedUser = userStorage.get()
-      if (savedUser) {
-        const mockUser = createMockUser(savedUser.email)
-        setUser(mockUser)
+    // Create mock user for both development and production (since we removed auth)
+    if (process.env.NODE_ENV === 'development' || !process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
+      let savedUser = userStorage.get()
+      if (!savedUser) {
+        // Create a default user
+        savedUser = { email: 'user@queet.app', name: 'Queet User' }
+        userStorage.set(savedUser)
       }
+      const mockUser = createMockUser(savedUser.email)
+      setUser(mockUser)
       setLoading(false)
       return
     }

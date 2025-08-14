@@ -97,13 +97,11 @@ export function useProgress() {
   }, [])
 
   const loadProgress = useCallback(async () => {
-    if (!user) return
-
     try {
       setLoading(true)
 
-      // For development, use local storage
-      if (process.env.NODE_ENV === 'development' && !process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
+      // Use local storage for both development and production (since we removed auth)
+      if (process.env.NODE_ENV === 'development' || !user) {
         let savedProgress = progressStorage.get()
         
         if (!savedProgress) {
@@ -171,10 +169,10 @@ export function useProgress() {
   }, [user, initialized])
 
   useEffect(() => {
-    if (user && !initialized) {
+    if (!initialized) {
       loadProgress()
     }
-  }, [user, initialized, loadProgress])
+  }, [initialized, loadProgress])
 
   const checkAchievements = useCallback(async (currentProgress: ProgressData) => {
     const newAchievements: Achievement[] = []
@@ -224,8 +222,8 @@ export function useProgress() {
     if (newAchievements.length > 0) {
       const updatedAchievements = [...currentProgress.achievements, ...newAchievements]
       
-      // For development, use local storage
-      if (process.env.NODE_ENV === 'development' && !process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
+      // Use local storage for both development and production (since we removed auth)
+      if (process.env.NODE_ENV === 'development' || !user) {
         const updatedProgress = {
           ...currentProgress,
           achievements: updatedAchievements,
@@ -250,11 +248,11 @@ export function useProgress() {
   }, [user])
 
   const updateStreak = useCallback(async (reset: boolean = false) => {
-    if (!user || !progress) return
+    if (!progress) return
 
     try {
-      // For development, use local storage
-      if (process.env.NODE_ENV === 'development' && !process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
+      // Use local storage for both development and production (since we removed auth)
+      if (process.env.NODE_ENV === 'development' || !user) {
         const today = new Date()
         const startDate = new Date(progress.startDate)
         const lastReset = new Date(progress.lastResetDate)
@@ -464,8 +462,8 @@ export function useProgress() {
     if (!user || !progress) return
 
     try {
-      // For development, use local storage
-      if (process.env.NODE_ENV === 'development' && !process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
+      // Use local storage for both development and production (since we removed auth)
+      if (process.env.NODE_ENV === 'development' || !user) {
         const updatedProgress = progressStorage.addTrigger(trigger)
         if (updatedProgress) {
           setProgress(updatedProgress)
@@ -497,8 +495,8 @@ export function useProgress() {
     if (!user || !progress) return
 
     try {
-      // For development, use local storage
-      if (process.env.NODE_ENV === 'development' && !process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
+      // Use local storage for both development and production (since we removed auth)
+      if (process.env.NODE_ENV === 'development' || !user) {
         const updatedTriggers = progress.triggers.filter(t => t.id !== triggerId)
         const updatedProgress = {
           ...progress,
@@ -533,8 +531,8 @@ export function useProgress() {
       const lastHitDate = new Date(progress.lastHitDate)
       const isNewDay = today.toDateString() !== lastHitDate.toDateString()
 
-      // For development, use local storage
-      if (process.env.NODE_ENV === 'development' && !process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
+      // Use local storage for both development and production (since we removed auth)
+      if (process.env.NODE_ENV === 'development' || !user) {
         const updatedProgress = {
           ...progress,
           smokingHits: progress.smokingHits + 1,
@@ -580,8 +578,8 @@ export function useProgress() {
         return
       }
 
-      // For development, use local storage
-      if (process.env.NODE_ENV === 'development' && !process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
+      // Use local storage for both development and production (since we removed auth)
+      if (process.env.NODE_ENV === 'development' || !user) {
         const updatedProgress = {
           ...progress,
           smokingHits: Math.max(0, progress.smokingHits - 1),
@@ -656,8 +654,8 @@ export function useProgress() {
         achievements: []
       }
 
-      // For development, use local storage
-      if (process.env.NODE_ENV === 'development' && !process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
+      // Use local storage for both development and production (since we removed auth)
+      if (process.env.NODE_ENV === 'development' || !user) {
         progressStorage.set(updatedProgress)
         setProgress(updatedProgress)
         toast.success('Logros reiniciados')
