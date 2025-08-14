@@ -11,10 +11,6 @@ export const metadata: Metadata = {
   keywords: 'DEJAR DE FUMAR, MARIHUANA, CANNABIS, ADICCIÓN, RECUPERACIÓN, SALUD',
   authors: [{ name: 'QUEET WEED TEAM' }],
   manifest: '/manifest.json',
-  icons: {
-    icon: '/icon-192x192.png',
-    apple: '/apple-touch-icon.png',
-  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black',
@@ -45,17 +41,8 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="QUEET WEED" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="msapplication-TileColor" content="#000000" />
-        <meta name="msapplication-tap-highlight" content="no" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
         <meta name="theme-color" content="#000000" />
-        <meta name="apple-touch-fullscreen" content="yes" />
-        <meta name="apple-mobile-web-app-orientations" content="portrait" />
-        <link rel="apple-touch-startup-image" href="/apple-touch-icon.png" />
-        <link rel="manifest" href="/manifest.json" crossOrigin="use-credentials" />
-        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-        <meta http-equiv="Pragma" content="no-cache" />
-        <meta http-equiv="Expires" content="0" />
+        <link rel="manifest" href="/manifest.json" />
       </head>
       <body className="font-mono bg-black text-white">
         <div className="min-h-screen bg-black">
