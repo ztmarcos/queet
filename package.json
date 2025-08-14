@@ -2,7 +2,7 @@
   "name": "queet-weed",
   "version": "1.0.0",
   "description": "App para dejar de fumar marihuana con seguimiento y memoria local",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -14,9 +14,9 @@
     "node": "18.x"
   },
   "dependencies": {
-    "next": "14.0.0",
-    "react": "^18",
-    "react-dom": "^18",
+    "next": "^14.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "framer-motion": "^10.16.4",
     "lucide-react": "^0.292.0",
     "react-hot-toast": "^2.4.1",
@@ -24,15 +24,15 @@
     "firebase": "^10.7.0"
   },
   "devDependencies": {
-    "typescript": "^5",
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "autoprefixer": "^10.0.1",
-    "postcss": "^8",
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.31",
     "tailwindcss": "^3.3.0",
-    "eslint": "^8",
-    "eslint-config-next": "14.0.0"
+    "eslint": "^8.0.0",
+    "eslint-config-next": "^14.0.0"
   },
   "keywords": [
     "quit",
