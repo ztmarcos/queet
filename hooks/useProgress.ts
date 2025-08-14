@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { progressStorage } from '@/lib/localStorage'
+import { progressStorage, dataManager } from '@/lib/localStorage'
 import toast from 'react-hot-toast'
 
 export interface ProgressData {
@@ -128,6 +128,20 @@ export function useProgress() {
       loadProgress()
     }
   }, [initialized, loadProgress])
+
+  // Auto-backup every time progress changes
+  useEffect(() => {
+    if (progress) {
+      // Check data integrity
+      const isIntegrityValid = dataManager.checkIntegrity()
+      if (!isIntegrityValid) {
+        console.warn('Data integrity check failed')
+      }
+      
+      // Create backup reminder
+      dataManager.createBackupReminder()
+    }
+  }, [progress])
 
   const checkAchievements = useCallback(async (currentProgress: ProgressData) => {
     const newAchievements: Achievement[] = []

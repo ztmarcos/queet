@@ -273,6 +273,68 @@ export const dataManager = {
       console.error('Error clearing all data:', error)
     }
   },
+
+  // Auto-backup to cloud storage (if available)
+  autoBackup: async (): Promise<void> => {
+    try {
+      const data = dataManager.export()
+      
+      // Try to save to cloud storage if available
+      if ('showSaveFilePicker' in window) {
+        const handle = await (window as any).showSaveFilePicker({
+          suggestedName: `queet-weed-backup-${new Date().toISOString().split('T')[0]}.json`,
+          types: [{
+            description: 'JSON File',
+            accept: { 'application/json': ['.json'] },
+          }],
+        })
+        const writable = await handle.createWritable()
+        await writable.write(data)
+        await writable.close()
+        console.log('Auto-backup saved to file')
+      }
+    } catch (error) {
+      console.log('Auto-backup not available:', error)
+    }
+  },
+
+  // Check data integrity
+  checkIntegrity: (): boolean => {
+    try {
+      const progress = progressStorage.get()
+      const user = userStorage.get()
+      
+      // Basic integrity checks
+      if (!progress || !user) return false
+      if (!progress.startDate || typeof progress.currentStreak !== 'number') return false
+      
+      return true
+    } catch (error) {
+      console.error('Data integrity check failed:', error)
+      return false
+    }
+  },
+
+  // Create backup reminder
+  createBackupReminder: (): void => {
+    try {
+      const lastBackup = localStorage.getItem('queet-weed-last-backup')
+      const today = new Date().toISOString().split('T')[0]
+      
+      if (lastBackup !== today) {
+        // Show backup reminder every 7 days
+        const lastBackupDate = lastBackup ? new Date(lastBackup) : new Date(0)
+        const daysSinceBackup = Math.floor((new Date().getTime() - lastBackupDate.getTime()) / (1000 * 60 * 60 * 24))
+        
+        if (daysSinceBackup >= 7) {
+          console.log('Backup reminder: Consider exporting your data')
+          // You can add a toast notification here
+        }
+      }
+    } catch (error) {
+      console.error('Error creating backup reminder:', error)
+    }
+  }
 }
 
 // Utility functions
