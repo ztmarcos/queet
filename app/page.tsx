@@ -8,14 +8,11 @@ import ProgressTracker from '@/components/ProgressTracker'
 import TriggerLogger from '@/components/TriggerLogger'
 import SupportChat from '@/components/SupportChat'
 import SettingsPanel from '@/components/SettingsPanel'
-import LoginForm from '@/components/LoginForm'
-import { useAuth } from '@/hooks/useAuth'
 import { useLanguage } from '@/hooks/useLanguage'
 import { useTranslations } from '@/lib/i18n'
 import { useServiceWorker } from '@/hooks/useServiceWorker'
 
 export default function Home() {
-  const { user, loading: authLoading } = useAuth()
   const { language } = useLanguage()
   const t = useTranslations(language)
   const [activeTab, setActiveTab] = useState('dashboard')
@@ -31,25 +28,6 @@ export default function Home() {
     { id: 'settings', label: t.nav.settings, icon: Settings },
   ]
 
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-black">
-        <div className="text-center">
-          <div className="animate-pulse border-2 border-white w-12 h-12 mx-auto mb-4"></div>
-          <p className="text-white font-mono uppercase tracking-wider">{t.dashboard.loading}</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (!user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-4 bg-black">
-        <LoginForm />
-      </div>
-    )
-  }
-
   return (
     <div className="min-h-screen bg-black">
       {/* Header */}
@@ -61,7 +39,7 @@ export default function Home() {
             </h1>
             <div className="w-8 h-8 bg-white text-black rounded-none flex items-center justify-center border-2 border-white">
               <span className="font-mono font-bold text-sm">
-                {user.email?.charAt(0).toUpperCase()}
+                U
               </span>
             </div>
           </div>
@@ -100,17 +78,16 @@ export default function Home() {
                       : 'text-white hover:bg-white hover:text-black'
                   }`}
                 >
-                  <Icon size={20} />
-                  <span className="text-xs mt-1 font-mono font-bold uppercase tracking-wider">{tab.label}</span>
+                  <Icon className="w-5 h-5 mb-1" />
+                  <span className="text-xs font-mono uppercase tracking-wider">
+                    {tab.label}
+                  </span>
                 </button>
               )
             })}
           </div>
         </div>
       </nav>
-
-      {/* Bottom padding for navigation */}
-      <div className="h-20"></div>
     </div>
   )
 }
