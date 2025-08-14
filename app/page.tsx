@@ -48,9 +48,9 @@ export default function Home() {
   ]
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-black flex flex-col">
       {/* Header */}
-      <header className="bg-black border-b-2 border-white">
+      <header className="bg-black border-b-2 border-white flex-shrink-0">
         <div className="max-w-md mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <h1 className="text-xl font-bold text-white font-mono uppercase tracking-wider">
@@ -66,7 +66,7 @@ export default function Home() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-md mx-auto px-4 py-6">
+      <main className="flex-1 overflow-y-auto max-w-md mx-auto px-4 py-6 pb-20">
         <motion.div
           key={activeTab}
           initial={{ opacity: 0, x: 20 }}
@@ -82,7 +82,7 @@ export default function Home() {
       </main>
 
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-black border-t-2 border-white">
+      <nav className="fixed bottom-0 left-0 right-0 bg-black border-t-2 border-white flex-shrink-0">
         <div className="max-w-md mx-auto px-4 py-2">
           <div className="flex justify-around">
             {tabs.map((tab) => {
