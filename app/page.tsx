@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { Calendar, TrendingUp, Target, MessageCircle, Settings, Plus } from 'lucide-react'
 import Dashboard from '@/components/Dashboard'
 import ProgressTracker from '@/components/ProgressTracker'
+import SmokingReport from '@/components/SmokingReport'
 import TriggerLogger from '@/components/TriggerLogger'
 import SupportChat from '@/components/SupportChat'
 import SettingsPanel from '@/components/SettingsPanel'
@@ -42,6 +43,7 @@ export default function Home() {
   const tabs = [
     { id: 'dashboard', label: t.nav.dashboard, icon: TrendingUp },
     { id: 'progress', label: t.nav.progress, icon: Target },
+    { id: 'smoking-report', label: t.progress.smokingReport, icon: Calendar },
     { id: 'triggers', label: t.nav.triggers, icon: Plus },
     { id: 'support', label: t.nav.support, icon: MessageCircle },
     { id: 'settings', label: t.nav.settings, icon: Settings },
@@ -73,11 +75,12 @@ export default function Home() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.3 }}
         >
-          {activeTab === 'dashboard' && <Dashboard />}
-          {activeTab === 'progress' && <ProgressTracker />}
-          {activeTab === 'triggers' && <TriggerLogger />}
-          {activeTab === 'support' && <SupportChat />}
-          {activeTab === 'settings' && <SettingsPanel />}
+                                 {activeTab === 'dashboard' && <Dashboard />}
+                       {activeTab === 'progress' && <ProgressTracker />}
+                       {activeTab === 'smoking-report' && <SmokingReport />}
+                       {activeTab === 'triggers' && <TriggerLogger />}
+                       {activeTab === 'support' && <SupportChat />}
+                       {activeTab === 'settings' && <SettingsPanel />}
         </motion.div>
       </main>
 

@@ -45,6 +45,7 @@ export interface Translations {
     futureGoal: string
     daysRemaining: string
     allAchievements: string
+    smokingReport: string
   }
   
   // Triggers
@@ -181,6 +182,7 @@ export const translations: Record<Language, Translations> = {
       futureGoal: 'Objetivo futuro',
       daysRemaining: 'días restantes',
       allAchievements: 'Todos los Logros',
+      smokingReport: 'REPORTE DE FUMADAS',
     },
     triggers: {
       registerTrigger: 'REGISTRAR TRIGGER',
@@ -305,6 +307,7 @@ export const translations: Record<Language, Translations> = {
       futureGoal: 'Future goal',
       daysRemaining: 'days remaining',
       allAchievements: 'All Achievements',
+      smokingReport: 'SMOKING REPORT',
     },
     triggers: {
       registerTrigger: 'REGISTER TRIGGER',

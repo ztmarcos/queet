@@ -85,6 +85,11 @@ body {
 }
 
 /* Custom scrollbar for webkit browsers */
+
+/* Smoking Report Grid */
+.grid-cols-53 {
+  grid-template-columns: repeat(53, minmax(0, 1fr));
+}
 ::-webkit-scrollbar {
   width: 0px;
   background: transparent;
