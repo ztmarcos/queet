@@ -50,11 +50,12 @@ export default function SmokingReport() {
         
         // Simular algunos hits para mostrar los colores (solo para demo)
         if (daysSinceStart >= 0 && daysSinceStart < 30) {
-          // Simular algunos días con hits para mostrar colores
+          // Simular algunos días con hits para mostrar colores (usando fecha para ser consistente)
+          const dayHash = day.getDate() + day.getMonth() * 31
           if (dayOfWeek === 0 || dayOfWeek === 6) { // Domingos y sábados
-            hits = Math.floor(Math.random() * 5) + 1 // 1-5 hits
+            hits = (dayHash % 5) + 1 // 1-5 hits (consistente)
           } else if (dayOfWeek === 3) { // Miércoles
-            hits = Math.floor(Math.random() * 3) + 1 // 1-3 hits
+            hits = (dayHash % 3) + 1 // 1-3 hits (consistente)
           }
         }
       }
@@ -107,6 +108,15 @@ export default function SmokingReport() {
   const totalHits = yearData.reduce((sum, day) => sum + day.hits, 0)
   const daysWithHits = yearData.filter(day => day.hits > 0).length
   const maxHits = Math.max(...yearData.map(day => day.hits))
+  
+  // Debug: Log para verificar que los datos se están generando
+  console.log('SmokingReport Debug:', {
+    totalDays: yearData.length,
+    daysWithHits,
+    totalHits,
+    maxHits,
+    sampleDays: yearData.slice(0, 5).map(d => ({ date: d.date.toISOString().split('T')[0], hits: d.hits, color: d.color }))
+  })
 
   return (
     <div className="space-y-6">
