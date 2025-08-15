@@ -11,6 +11,8 @@ export interface ProgressData {
   smokingHits: number
   dailyHits: number
   lastHitDate: string
+  weedPurchases: number
+  lastPurchaseDate: string
   triggers: Trigger[]
   achievements: Achievement[]
 }
@@ -42,6 +44,8 @@ const mockProgress: ProgressData = {
   smokingHits: 0,
   dailyHits: 0,
   lastHitDate: new Date().toISOString(),
+  weedPurchases: 0,
+  lastPurchaseDate: new Date().toISOString(),
   triggers: [
     {
       id: '1',
@@ -415,6 +419,26 @@ export function useProgress() {
     }
   }, [progress])
 
+  const reportWeedPurchase = useCallback(async () => {
+    if (!progress) return
+
+    try {
+      const today = new Date()
+      const updatedProgress = {
+        ...progress,
+        weedPurchases: progress.weedPurchases + 1,
+        lastPurchaseDate: today.toISOString(),
+      }
+
+      progressStorage.set(updatedProgress)
+      setProgress(updatedProgress)
+      toast.success('Compra de weed registrada')
+    } catch (error) {
+      console.error('Error reporting weed purchase:', error)
+      toast.error('Error al registrar compra')
+    }
+  }, [progress])
+
   return {
     progress,
     loading,
@@ -424,6 +448,7 @@ export function useProgress() {
     addSmokingHit,
     subtractSmokingHit,
     resetAchievements,
+    reportWeedPurchase,
     autoUpdateStreak,
   }
 }

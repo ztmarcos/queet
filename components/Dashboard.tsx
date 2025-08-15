@@ -11,7 +11,7 @@ import { es, enUS } from 'date-fns/locale'
 import toast from 'react-hot-toast'
 
 export default function Dashboard() {
-  const { progress, loading, updateStreak, addSmokingHit, subtractSmokingHit, resetAchievements } = useProgress()
+  const { progress, loading, updateStreak, addSmokingHit, subtractSmokingHit, resetAchievements, reportWeedPurchase } = useProgress()
   const { language } = useLanguage()
   const t = useTranslations(language)
   const [showResetConfirm, setShowResetConfirm] = useState(false)
@@ -94,6 +94,10 @@ export default function Dashboard() {
               <div className="text-2xl font-bold font-mono text-white">{progress.dailyHits}</div>
               <div className="text-white font-mono uppercase tracking-wider">{t.dashboard.dailyHits}</div>
             </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold font-mono text-white">{progress.weedPurchases || 0}</div>
+              <div className="text-white font-mono uppercase tracking-wider">COMPRAS</div>
+            </div>
           </div>
           
           <div className="text-center text-xs text-white font-mono uppercase tracking-wider opacity-50">
@@ -131,6 +135,15 @@ export default function Dashboard() {
                 {t.dashboard.subtractHit}
               </button>
               
+              <button
+                onClick={reportWeedPurchase}
+                className="flex-1 py-3 px-4 bg-green-600 text-white border-2 border-green-600 font-mono uppercase tracking-wider text-sm font-bold hover:bg-white hover:text-green-600 transition-all btn-touch"
+              >
+                $
+              </button>
+            </div>
+            
+            <div className="flex space-x-3">
               <button
                 onClick={resetAchievements}
                 className="flex-1 py-3 px-4 bg-black text-white border-2 border-white font-mono uppercase tracking-wider text-sm font-bold hover:bg-white hover:text-black transition-all btn-touch"
