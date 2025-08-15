@@ -95,6 +95,14 @@ export function useProgress() {
         savedProgress = mockProgress
         progressStorage.set(savedProgress)
       } else {
+        // Ensure all required fields exist for backward compatibility
+        savedProgress = {
+          ...savedProgress,
+          weedPurchases: savedProgress.weedPurchases || 0,
+          totalMoneySpent: savedProgress.totalMoneySpent || 0,
+          lastPurchaseDate: savedProgress.lastPurchaseDate || new Date().toISOString(),
+        }
+        
         // Clean duplicate achievements if they exist
         if (savedProgress.achievements && savedProgress.achievements.length > 0) {
           const cleanedAchievements = cleanDuplicateAchievements(savedProgress.achievements)
@@ -426,10 +434,11 @@ export function useProgress() {
 
     try {
       const today = new Date()
+      const currentTotal = Number(progress.totalMoneySpent || 0)
       const updatedProgress = {
         ...progress,
         weedPurchases: progress.weedPurchases + 1,
-        totalMoneySpent: progress.totalMoneySpent + amount,
+        totalMoneySpent: currentTotal + amount,
         lastPurchaseDate: today.toISOString(),
       }
 

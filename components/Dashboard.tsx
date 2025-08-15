@@ -119,10 +119,9 @@ export default function Dashboard() {
             <div className="text-center">
               <div className="text-2xl font-bold font-mono text-white">{progress.weedPurchases || 0}</div>
               <div className="text-white font-mono uppercase tracking-wider">COMPRAS</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold font-mono text-white">${(progress.totalMoneySpent || 0).toFixed(2)}</div>
-              <div className="text-white font-mono uppercase tracking-wider">GASTADO</div>
+              <div className="text-xs text-white font-mono uppercase tracking-wider opacity-70">
+                (${Number(progress.totalMoneySpent || 0).toFixed(2)})
+              </div>
             </div>
           </div>
           
