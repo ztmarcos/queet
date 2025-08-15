@@ -95,34 +95,13 @@ export default function Dashboard() {
               <div className="text-white font-mono uppercase tracking-wider">{t.dashboard.dailyHits}</div>
             </div>
           </div>
-        </motion.div>
-
-        {/* Start Date Info */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-          className="card-mobile border-3 border-white shadow-brutalist mb-6"
-        >
-          <div className="text-center">
-            <div className="flex items-center justify-center mb-2">
-              <Calendar className="w-5 h-5 text-white mr-2" />
-              <span className="text-white font-mono uppercase tracking-wider text-sm">
-                {t.dashboard.startDate}
-              </span>
-            </div>
-            <div className="text-lg font-bold font-mono text-white mb-1">
-              {startDate.toLocaleDateString(locale === es ? 'es-ES' : 'en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              }).toUpperCase()}
-            </div>
-            <div className="text-sm text-white font-mono uppercase tracking-wider opacity-70">
-              {formatDistanceToNow(startDate, { addSuffix: true, locale }).toUpperCase()}
-            </div>
+          
+          <div className="text-center text-xs text-white font-mono uppercase tracking-wider opacity-50">
+            Fecha inicio: {startDate.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' })}
           </div>
         </motion.div>
+
+
 
         {/* Quick Actions */}
         <motion.div
