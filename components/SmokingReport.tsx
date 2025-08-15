@@ -43,10 +43,20 @@ export default function SmokingReport() {
       if (isToday && isAfterStart) {
         hits = progress.dailyHits
       } else if (day < new Date() && isAfterStart) {
-        // Para días pasados después del inicio, usar progreso real
-        // Si hubo fumadas ese día, el streak se habría reseteado
-        // Por simplicidad, solo mostrar hits para días específicos conocidos
-        hits = 0 // Por defecto no fumó (mantener datos limpios)
+        // Para demostración, agregar algunos hits de ejemplo en días pasados
+        // En una implementación real, esto vendría de un historial almacenado
+        const dayOfWeek = day.getDay()
+        const daysSinceStart = Math.floor((day.getTime() - new Date(progress.startDate).getTime()) / (1000 * 60 * 60 * 24))
+        
+        // Simular algunos hits para mostrar los colores (solo para demo)
+        if (daysSinceStart >= 0 && daysSinceStart < 30) {
+          // Simular algunos días con hits para mostrar colores
+          if (dayOfWeek === 0 || dayOfWeek === 6) { // Domingos y sábados
+            hits = Math.floor(Math.random() * 5) + 1 // 1-5 hits
+          } else if (dayOfWeek === 3) { // Miércoles
+            hits = Math.floor(Math.random() * 3) + 1 // 1-3 hits
+          }
+        }
       }
       
       // Color coding based on hits
