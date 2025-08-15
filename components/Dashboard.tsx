@@ -128,26 +128,26 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="flex justify-center space-x-6 text-sm mb-4">
+          <div className="flex justify-center space-x-2 sm:space-x-4 text-sm mb-4">
             <div className="text-center">
-              <div className="text-2xl font-bold font-mono text-white">{progress.longestStreak}</div>
-              <div className="text-white font-mono uppercase tracking-wider">{t.dashboard.bestStreak}</div>
+              <div className="text-xl sm:text-2xl font-bold font-mono text-white">{progress.longestStreak}</div>
+              <div className="text-white font-mono uppercase tracking-wider text-xs sm:text-sm">{t.dashboard.bestStreak}</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold font-mono text-white">{progress.totalDays}</div>
-              <div className="text-white font-mono uppercase tracking-wider">{t.dashboard.totalDays}</div>
+              <div className="text-xl sm:text-2xl font-bold font-mono text-white">{progress.totalDays}</div>
+              <div className="text-white font-mono uppercase tracking-wider text-xs sm:text-sm">{t.dashboard.totalDays}</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold font-mono text-white">{progress.smokingHits}</div>
-              <div className="text-white font-mono uppercase tracking-wider">{t.dashboard.smokingHits}</div>
+              <div className="text-xl sm:text-2xl font-bold font-mono text-white">{progress.smokingHits}</div>
+              <div className="text-white font-mono uppercase tracking-wider text-xs sm:text-sm">{t.dashboard.smokingHits}</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold font-mono text-white">{progress.dailyHits}</div>
-              <div className="text-white font-mono uppercase tracking-wider">{t.dashboard.dailyHits}</div>
+              <div className="text-xl sm:text-2xl font-bold font-mono text-white">{progress.dailyHits}</div>
+              <div className="text-white font-mono uppercase tracking-wider text-xs sm:text-sm">{t.dashboard.dailyHits}</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold font-mono text-white">{progress.weedPurchases || 0}</div>
-              <div className="text-white font-mono uppercase tracking-wider">COMPRAS</div>
+              <div className="text-xl sm:text-2xl font-bold font-mono text-white">{progress.weedPurchases || 0}</div>
+              <div className="text-white font-mono uppercase tracking-wider text-xs sm:text-sm">COMPRAS</div>
               <div className="text-xs text-white font-mono uppercase tracking-wider opacity-70">
                 (${Number(progress.totalMoneySpent || 0).toFixed(2)})
               </div>
