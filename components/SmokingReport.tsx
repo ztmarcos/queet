@@ -169,7 +169,7 @@ export default function SmokingReport() {
                         whileTap={{ scale: 0.9 }}
                         className={`w-4 h-4 ${day.color} border-2 border-white cursor-pointer transition-all duration-300 shadow-sm ${
                           hoveredDay === day ? 'ring-2 ring-yellow-400 shadow-lg scale-110' : ''
-                        } ${isSameDay(day.date, new Date()) ? 'ring-2 ring-yellow-400 animate-pulse' : ''}`}
+                        } ${isSameDay(day.date, new Date()) ? 'ring-2 ring-yellow-400' : ''}`}
                         onMouseEnter={() => setHoveredDay(day)}
                         onMouseLeave={() => setHoveredDay(null)}
                         onClick={() => setSelectedDay(day)}
