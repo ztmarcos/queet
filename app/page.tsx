@@ -42,11 +42,11 @@ export default function Home() {
 
   const tabs = [
     { id: 'dashboard', label: t.nav.dashboard, icon: TrendingUp },
+    { id: 'smoking-report', label: 'HITS', icon: Calendar },
     { id: 'progress', label: t.nav.progress, icon: Target },
-    { id: 'smoking-report', label: t.progress.smokingReport, icon: Calendar },
     { id: 'triggers', label: t.nav.triggers, icon: Plus },
-    { id: 'support', label: t.nav.support, icon: MessageCircle },
-    { id: 'settings', label: t.nav.settings, icon: Settings },
+    { id: 'support', label: '', icon: MessageCircle },
+    { id: 'settings', label: '', icon: Settings },
   ]
 
   return (
@@ -86,24 +86,26 @@ export default function Home() {
 
       {/* Bottom Navigation */}
       <nav className="fixed bottom-0 left-0 right-0 bg-black border-t-2 border-white flex-shrink-0">
-        <div className="max-w-md mx-auto px-4 py-2">
-          <div className="flex justify-around">
+        <div className="max-w-md mx-auto px-1 py-2">
+          <div className="flex justify-center space-x-1">
             {tabs.map((tab) => {
               const Icon = tab.icon
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex flex-col items-center py-2 px-3 transition-all ${
+                  className={`flex flex-col items-center justify-center py-2 px-2 transition-all min-w-0 ${
                     activeTab === tab.id
                       ? 'text-black bg-white'
                       : 'text-white hover:bg-white hover:text-black'
                   }`}
                 >
-                  <Icon className="w-5 h-5 mb-1" />
-                  <span className="text-xs font-mono uppercase tracking-wider">
-                    {tab.label}
-                  </span>
+                  <Icon className={`w-4 h-4 ${tab.label ? 'mb-1' : ''}`} />
+                  {tab.label && (
+                    <span className="text-xs font-mono uppercase tracking-wider text-center leading-tight">
+                      {tab.label}
+                    </span>
+                  )}
                 </button>
               )
             })}

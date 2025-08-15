@@ -25,19 +25,9 @@ export default function SmokingReport() {
 
   const locale = language === 'es' ? es : enUS
 
-  if (loading || !progress) {
-    return (
-      <div className="space-y-4">
-        <div className="animate-pulse">
-          <div className="h-48 bg-white border-2 border-white mb-4"></div>
-          <div className="h-32 bg-white border-2 border-white mb-4"></div>
-          <div className="h-32 bg-white border-2 border-white"></div>
-        </div>
-      </div>
-    )
-  }
-
   const generateYearData = useCallback((): DayData[] => {
+    if (!progress) return []
+    
     const startDate = startOfYear(new Date())
     const endDate = endOfYear(new Date())
     const days = eachDayOfInterval({ start: startDate, end: endDate })
@@ -89,7 +79,19 @@ export default function SmokingReport() {
         tooltip
       }
     })
-  }, [progress.dailyHits, progress.startDate, locale])
+  }, [progress, locale])
+
+  if (loading || !progress) {
+    return (
+      <div className="space-y-4">
+        <div className="animate-pulse">
+          <div className="h-48 bg-white border-2 border-white mb-4"></div>
+          <div className="h-32 bg-white border-2 border-white mb-4"></div>
+          <div className="h-32 bg-white border-2 border-white"></div>
+        </div>
+      </div>
+    )
+  }
 
   const yearData = generateYearData()
   const totalHits = yearData.reduce((sum, day) => sum + day.hits, 0)
