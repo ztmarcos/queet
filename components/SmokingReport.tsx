@@ -100,6 +100,8 @@ export default function SmokingReport() {
   // Debug: Log para verificar que los datos se están generando
   const todayData = yearData.find(day => isSameDay(day.date, new Date()))
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+  
+  // Log más detallado para móvil
   console.log('SmokingReport Debug:', {
     isMobile,
     totalDays: yearData.length,
@@ -108,8 +110,21 @@ export default function SmokingReport() {
     maxHits,
     todayData: todayData ? { date: todayData.date.toISOString().split('T')[0], hits: todayData.hits, color: todayData.color } : 'Not found',
     progressDailyHits: progress.dailyHits,
+    progressStartDate: progress.startDate,
+    currentDate: new Date().toISOString().split('T')[0],
     sampleDays: yearData.slice(0, 5).map(d => ({ date: d.date.toISOString().split('T')[0], hits: d.hits, color: d.color }))
   })
+  
+  // Log específico para móvil
+  if (isMobile) {
+    console.log('MOBILE DEBUG - Today data:', {
+      date: todayData?.date.toISOString().split('T')[0],
+      hits: todayData?.hits,
+      color: todayData?.color,
+      progressDailyHits: progress.dailyHits,
+      isToday: todayData ? isSameDay(todayData.date, new Date()) : false
+    })
+  }
 
   return (
     <div className="space-y-6">
@@ -172,6 +187,14 @@ export default function SmokingReport() {
                         className={`w-6 h-6 sm:w-4 sm:h-4 ${day.color} border-2 border-white cursor-pointer transition-all duration-300 shadow-sm ${
                           hoveredDay === day ? 'ring-2 ring-yellow-400 shadow-lg scale-110' : ''
                         } ${isSameDay(day.date, new Date()) ? 'ring-2 ring-blue-400' : ''}`}
+                        style={{
+                          backgroundColor: isSameDay(day.date, new Date()) && progress.dailyHits > 0 
+                            ? (progress.dailyHits >= 1 && progress.dailyHits <= 3 ? '#fbbf24' : 
+                               progress.dailyHits >= 4 && progress.dailyHits <= 6 ? '#10b981' :
+                               progress.dailyHits >= 7 && progress.dailyHits <= 9 ? '#f97316' :
+                               progress.dailyHits >= 10 ? '#ef4444' : '#475569')
+                            : undefined
+                        }}
                         onMouseEnter={() => setHoveredDay(day)}
                         onMouseLeave={() => setHoveredDay(null)}
                         onTouchStart={() => setHoveredDay(day)}
