@@ -99,7 +99,9 @@ export default function SmokingReport() {
   
   // Debug: Log para verificar que los datos se están generando
   const todayData = yearData.find(day => isSameDay(day.date, new Date()))
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
   console.log('SmokingReport Debug:', {
+    isMobile,
     totalDays: yearData.length,
     daysWithHits,
     totalHits,
@@ -162,17 +164,18 @@ export default function SmokingReport() {
                 </div>
                 
                                   {/* Days Grid */}
-                  <div className="grid grid-cols-31 gap-1">
+                  <div className="grid grid-cols-7 gap-1">
                     {monthDays.map((day, dayIndex) => (
                       <motion.div
                         key={dayIndex}
-                        whileHover={{ scale: 1.4, zIndex: 10 }}
                         whileTap={{ scale: 0.9 }}
-                        className={`w-4 h-4 ${day.color} border-2 border-white cursor-pointer transition-all duration-300 shadow-sm ${
+                        className={`w-6 h-6 sm:w-4 sm:h-4 ${day.color} border-2 border-white cursor-pointer transition-all duration-300 shadow-sm ${
                           hoveredDay === day ? 'ring-2 ring-yellow-400 shadow-lg scale-110' : ''
                         } ${isSameDay(day.date, new Date()) ? 'ring-2 ring-blue-400' : ''}`}
                         onMouseEnter={() => setHoveredDay(day)}
                         onMouseLeave={() => setHoveredDay(null)}
+                        onTouchStart={() => setHoveredDay(day)}
+                        onTouchEnd={() => setHoveredDay(null)}
                         onClick={() => setSelectedDay(day)}
                         title={day.tooltip}
                       />
