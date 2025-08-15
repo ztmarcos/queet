@@ -137,7 +137,7 @@ export default function SmokingReport() {
         </h4>
         
         {/* Month Grid */}
-        <div className="space-y-4">
+        <div className="space-y-6">
           {Array.from({ length: 12 }, (_, monthIndex) => {
             const month = new Date(2024, monthIndex, 1)
             const monthDays = yearData.filter(day => 
@@ -145,14 +145,14 @@ export default function SmokingReport() {
             )
             
             return (
-              <div key={monthIndex} className="space-y-2">
+              <div key={monthIndex} className="space-y-3">
                 {/* Month Label */}
                 <div className="text-xs font-bold font-mono uppercase tracking-wider text-white">
                   {format(month, 'MMMM', { locale }).toUpperCase()}
                 </div>
                 
                                   {/* Days Grid */}
-                  <div className="grid grid-cols-7 gap-0.5">
+                  <div className="grid grid-cols-7 gap-1 justify-items-center">
                     {monthDays.map((day, dayIndex) => (
                       <motion.div
                         key={dayIndex}
