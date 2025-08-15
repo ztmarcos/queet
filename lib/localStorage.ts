@@ -119,6 +119,9 @@ export const progressStorage = {
       lastHitDate: new Date().toISOString(),
       triggers: [],
       achievements: [],
+      weedPurchases: 0,
+      totalMoneySpent: 0,
+      lastPurchaseDate: new Date().toISOString(),
     }
 
     progressStorage.set(defaultProgress)
