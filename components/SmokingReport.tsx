@@ -60,9 +60,9 @@ export default function SmokingReport() {
       }
       
       // Color coding based on hits
-      let color = 'bg-white' // No smoking / No data
+      let color = 'bg-slate-700' // No smoking / No data - Darker color
       if (!isAfterStart) {
-        color = 'bg-gray-300' // Before start date
+        color = 'bg-gray-400' // Before start date - Lighter gray
       } else if (hits >= 1 && hits <= 3) {
         color = 'bg-yellow-400' // Grade 1: Yellow
       } else if (hits >= 4 && hits <= 6) {
@@ -110,12 +110,12 @@ export default function SmokingReport() {
         </h3>
         
         <div className="grid grid-cols-2 gap-4 text-center">
-          <div className="bg-white text-black p-3 border-2 border-white">
-            <div className="text-2xl font-bold font-mono">{totalHits}</div>
+          <div className="bg-gradient-to-br from-yellow-400 to-orange-500 text-black p-4 border-2 border-white shadow-brutalist">
+            <div className="text-3xl font-bold font-mono">{totalHits}</div>
             <div className="text-xs font-mono uppercase tracking-wider">TOTAL HITS</div>
           </div>
-          <div className="bg-white text-black p-3 border-2 border-white">
-            <div className="text-2xl font-bold font-mono">{daysWithHits}</div>
+          <div className="bg-gradient-to-br from-green-400 to-blue-500 text-black p-4 border-2 border-white shadow-brutalist">
+            <div className="text-3xl font-bold font-mono">{daysWithHits}</div>
             <div className="text-xs font-mono uppercase tracking-wider">DÍAS CON HITS</div>
           </div>
         </div>
@@ -135,11 +135,11 @@ export default function SmokingReport() {
         
         <div className="grid grid-cols-2 gap-3 text-xs">
           <div className="flex items-center space-x-2">
-            <div className="w-4 h-4 bg-gray-300 border border-white"></div>
+            <div className="w-4 h-4 bg-gray-400 border border-white"></div>
             <span className="font-mono uppercase tracking-wider text-white">Antes inicio</span>
           </div>
           <div className="flex items-center space-x-2">
-            <div className="w-4 h-4 bg-white border border-white"></div>
+            <div className="w-4 h-4 bg-slate-700 border border-white"></div>
             <span className="font-mono uppercase tracking-wider text-white">No fumó</span>
           </div>
           <div className="flex items-center space-x-2">
@@ -188,23 +188,23 @@ export default function SmokingReport() {
                   {format(month, 'MMMM', { locale }).toUpperCase()}
                 </div>
                 
-                {/* Days Grid */}
-                <div className="grid grid-cols-31 gap-1">
-                  {monthDays.map((day, dayIndex) => (
-                    <motion.div
-                      key={dayIndex}
-                      whileHover={{ scale: 1.3 }}
-                      whileTap={{ scale: 0.8 }}
-                      className={`w-4 h-4 ${day.color} border border-white cursor-pointer transition-all duration-200 ${
-                        hoveredDay === day ? 'ring-2 ring-white shadow-lg' : ''
-                      } ${isSameDay(day.date, new Date()) ? 'ring-1 ring-yellow-400' : ''}`}
-                      onMouseEnter={() => setHoveredDay(day)}
-                      onMouseLeave={() => setHoveredDay(null)}
-                      onClick={() => setSelectedDay(day)}
-                      title={day.tooltip}
-                    />
-                  ))}
-                </div>
+                                  {/* Days Grid */}
+                  <div className="grid grid-cols-31 gap-1">
+                    {monthDays.map((day, dayIndex) => (
+                      <motion.div
+                        key={dayIndex}
+                        whileHover={{ scale: 1.4, zIndex: 10 }}
+                        whileTap={{ scale: 0.9 }}
+                        className={`w-4 h-4 ${day.color} border-2 border-white cursor-pointer transition-all duration-300 shadow-sm ${
+                          hoveredDay === day ? 'ring-2 ring-yellow-400 shadow-lg scale-110' : ''
+                        } ${isSameDay(day.date, new Date()) ? 'ring-2 ring-yellow-400 animate-pulse' : ''}`}
+                        onMouseEnter={() => setHoveredDay(day)}
+                        onMouseLeave={() => setHoveredDay(null)}
+                        onClick={() => setSelectedDay(day)}
+                        title={day.tooltip}
+                      />
+                    ))}
+                  </div>
               </div>
             )
           })}
