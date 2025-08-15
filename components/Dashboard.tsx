@@ -15,6 +15,8 @@ export default function Dashboard() {
   const { language } = useLanguage()
   const t = useTranslations(language)
   const [showResetConfirm, setShowResetConfirm] = useState(false)
+  const [showPurchaseModal, setShowPurchaseModal] = useState(false)
+  const [purchaseAmount, setPurchaseAmount] = useState('')
 
   const locale = language === 'es' ? es : enUS
 
@@ -29,6 +31,26 @@ export default function Dashboard() {
   const confirmReset = () => {
     updateStreak(true)
     setShowResetConfirm(false)
+  }
+
+  const handlePurchaseClick = () => {
+    setShowPurchaseModal(true)
+  }
+
+  const handlePurchaseSubmit = () => {
+    const amount = parseFloat(purchaseAmount)
+    if (isNaN(amount) || amount <= 0) {
+      toast.error('Ingresa un monto válido')
+      return
+    }
+    reportWeedPurchase(amount)
+    setPurchaseAmount('')
+    setShowPurchaseModal(false)
+  }
+
+  const handlePurchaseCancel = () => {
+    setPurchaseAmount('')
+    setShowPurchaseModal(false)
   }
 
   if (loading || !progress) {
@@ -98,6 +120,10 @@ export default function Dashboard() {
               <div className="text-2xl font-bold font-mono text-white">{progress.weedPurchases || 0}</div>
               <div className="text-white font-mono uppercase tracking-wider">COMPRAS</div>
             </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold font-mono text-white">${(progress.totalMoneySpent || 0).toFixed(2)}</div>
+              <div className="text-white font-mono uppercase tracking-wider">GASTADO</div>
+            </div>
           </div>
           
           <div className="text-center text-xs text-white font-mono uppercase tracking-wider opacity-50">
@@ -136,7 +162,7 @@ export default function Dashboard() {
               </button>
               
               <button
-                onClick={reportWeedPurchase}
+                onClick={handlePurchaseClick}
                 className="flex-1 py-3 px-4 bg-green-600 text-white border-2 border-green-600 font-mono uppercase tracking-wider text-sm font-bold hover:bg-white hover:text-green-600 transition-all btn-touch"
               >
                 $
@@ -240,6 +266,47 @@ export default function Dashboard() {
             <p className="text-sm text-white mt-2 font-mono uppercase tracking-wider">- QUEET WEED</p>
           </div>
         </motion.div>
+
+        {/* Purchase Modal */}
+        {showPurchaseModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-black border-3 border-white p-6 max-w-sm w-full"
+            >
+              <h3 className="text-lg font-semibold text-white font-mono uppercase tracking-wider mb-2">
+                REGISTRAR COMPRA
+              </h3>
+              <p className="text-white font-mono uppercase tracking-wider mb-4">
+                Ingresa el monto gastado en la compra:
+              </p>
+              <input
+                type="number"
+                value={purchaseAmount}
+                onChange={(e) => setPurchaseAmount(e.target.value)}
+                placeholder="0.00"
+                className="w-full bg-black text-white border-2 border-white p-3 font-mono uppercase tracking-wider mb-6 focus:outline-none focus:border-green-500"
+                step="0.01"
+                min="0"
+              />
+              <div className="flex space-x-3">
+                <button
+                  onClick={handlePurchaseCancel}
+                  className="flex-1 bg-black text-white border-2 border-white font-bold py-3 px-6 hover:bg-white hover:text-black transition-all font-mono uppercase tracking-wider btn-touch"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handlePurchaseSubmit}
+                  className="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 border-2 border-green-600 hover:border-green-700 transition-all font-mono uppercase tracking-wider btn-touch"
+                >
+                  Registrar
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
 
         {/* Reset Confirmation Modal */}
         {showResetConfirm && (
