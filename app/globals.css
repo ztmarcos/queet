@@ -90,6 +90,10 @@ body {
 .grid-cols-53 {
   grid-template-columns: repeat(53, minmax(0, 1fr));
 }
+
+.grid-cols-31 {
+  grid-template-columns: repeat(31, minmax(0, 1fr));
+}
 ::-webkit-scrollbar {
   width: 0px;
   background: transparent;

@@ -43,41 +43,44 @@ export default function SmokingReport() {
     const days = eachDayOfInterval({ start: startDate, end: endDate })
     
     return days.map(day => {
-      // For now, we'll use mock data based on progress.smokingHits
-      // In a real app, you'd have daily hit data
       const isToday = isSameDay(day, new Date())
-      const isStartDate = isSameDay(day, new Date(progress.startDate))
+      const isAfterStart = day >= new Date(progress.startDate)
+      const isBeforeToday = day <= new Date()
       
       let hits = 0
       
-      // Mock logic: distribute hits across recent days
-      if (isToday) {
+      // Solo usar datos reales existentes
+      if (isToday && isAfterStart) {
         hits = progress.dailyHits
-      } else if (isStartDate) {
-        hits = Math.floor(progress.smokingHits / 10) // Some hits on start date
-      } else if (day > new Date(progress.startDate) && day < new Date()) {
-        // Random distribution for demo
-        const daysSinceStart = Math.floor((day.getTime() - new Date(progress.startDate).getTime()) / (1000 * 60 * 60 * 24))
-        if (daysSinceStart < 30) {
-          hits = Math.floor(Math.random() * 5) // 0-4 hits for recent days
-        }
+      } else if (day < new Date() && isAfterStart) {
+        // Para días pasados después del inicio, usar progreso real
+        // Si hubo fumadas ese día, el streak se habría reseteado
+        // Por simplicidad, solo mostrar hits para días específicos conocidos
+        hits = 0 // Por defecto no fumó (mantener datos limpios)
       }
       
       // Color coding based on hits
-      let color = 'bg-white' // No smoking
-      if (hits >= 1 && hits <= 3) {
+      let color = 'bg-white' // No smoking / No data
+      if (!isAfterStart) {
+        color = 'bg-gray-300' // Before start date
+      } else if (hits >= 1 && hits <= 3) {
         color = 'bg-yellow-400' // Grade 1: Yellow
       } else if (hits >= 4 && hits <= 6) {
-        color = 'bg-green-500' // Grade 2: Green
+        color = 'bg-green-500' // Grade 2: Green  
       } else if (hits >= 7 && hits <= 9) {
         color = 'bg-orange-500' // Grade 3: Orange
       } else if (hits >= 10) {
         color = 'bg-red-500' // Grade 4: Red
       }
       
-      const tooltip = hits === 0 
-        ? `${format(day, 'EEEE, d MMMM yyyy', { locale })} - No fumó`
-        : `${format(day, 'EEEE, d MMMM yyyy', { locale })} - ${hits} ${hits === 1 ? 'hit' : 'hits'}`
+      let tooltip = ''
+      if (!isAfterStart) {
+        tooltip = `${format(day, 'EEEE, d MMMM yyyy', { locale })} - Antes del inicio`
+      } else if (hits === 0) {
+        tooltip = `${format(day, 'EEEE, d MMMM yyyy', { locale })} - No fumó`
+      } else {
+        tooltip = `${format(day, 'EEEE, d MMMM yyyy', { locale })} - ${hits} ${hits === 1 ? 'hit' : 'hits'}`
+      }
       
       return {
         date: day,
@@ -132,6 +135,10 @@ export default function SmokingReport() {
         
         <div className="grid grid-cols-2 gap-3 text-xs">
           <div className="flex items-center space-x-2">
+            <div className="w-4 h-4 bg-gray-300 border border-white"></div>
+            <span className="font-mono uppercase tracking-wider text-white">Antes inicio</span>
+          </div>
+          <div className="flex items-center space-x-2">
             <div className="w-4 h-4 bg-white border border-white"></div>
             <span className="font-mono uppercase tracking-wider text-white">No fumó</span>
           </div>
@@ -147,7 +154,7 @@ export default function SmokingReport() {
             <div className="w-4 h-4 bg-orange-500 border border-white"></div>
             <span className="font-mono uppercase tracking-wider text-white">7-9 hits</span>
           </div>
-          <div className="flex items-center space-x-2 col-span-2">
+          <div className="flex items-center space-x-2">
             <div className="w-4 h-4 bg-red-500 border border-white"></div>
             <span className="font-mono uppercase tracking-wider text-white">10+ hits</span>
           </div>
@@ -166,21 +173,46 @@ export default function SmokingReport() {
           {new Date().getFullYear()} - TODO EL AÑO
         </h4>
         
-        <div className="grid grid-cols-53 gap-1">
-          {yearData.map((day, index) => (
-            <motion.div
-              key={index}
-              whileHover={{ scale: 1.2 }}
-              whileTap={{ scale: 0.9 }}
-              className={`w-3 h-3 ${day.color} border border-white cursor-pointer transition-all duration-200 ${
-                hoveredDay === day ? 'ring-2 ring-white' : ''
-              }`}
-              onMouseEnter={() => setHoveredDay(day)}
-              onMouseLeave={() => setHoveredDay(null)}
-              onClick={() => setSelectedDay(day)}
-              title={day.tooltip}
-            />
-          ))}
+        {/* Month Grid */}
+        <div className="space-y-4">
+          {Array.from({ length: 12 }, (_, monthIndex) => {
+            const month = new Date(2024, monthIndex, 1)
+            const monthDays = yearData.filter(day => 
+              day.date.getMonth() === monthIndex
+            )
+            
+            return (
+              <div key={monthIndex} className="space-y-2">
+                {/* Month Label */}
+                <div className="text-xs font-bold font-mono uppercase tracking-wider text-white">
+                  {format(month, 'MMMM', { locale }).toUpperCase()}
+                </div>
+                
+                {/* Days Grid */}
+                <div className="grid grid-cols-31 gap-1">
+                  {monthDays.map((day, dayIndex) => (
+                    <motion.div
+                      key={dayIndex}
+                      whileHover={{ scale: 1.3 }}
+                      whileTap={{ scale: 0.8 }}
+                      className={`w-4 h-4 ${day.color} border border-white cursor-pointer transition-all duration-200 ${
+                        hoveredDay === day ? 'ring-2 ring-white shadow-lg' : ''
+                      } ${isSameDay(day.date, new Date()) ? 'ring-1 ring-yellow-400' : ''}`}
+                      onMouseEnter={() => setHoveredDay(day)}
+                      onMouseLeave={() => setHoveredDay(null)}
+                      onClick={() => setSelectedDay(day)}
+                      title={day.tooltip}
+                    />
+                  ))}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+        
+        {/* Legend for grid */}
+        <div className="mt-4 text-xs font-mono uppercase tracking-wider text-white opacity-70">
+          Cada punto = 1 día • Hover para ver detalles • Click para expandir
         </div>
       </motion.div>
 
