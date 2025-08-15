@@ -43,21 +43,9 @@ export default function SmokingReport() {
       if (isToday && isAfterStart) {
         hits = progress.dailyHits
       } else if (day < new Date() && isAfterStart) {
-        // Para demostración, agregar algunos hits de ejemplo en días pasados
-        // En una implementación real, esto vendría de un historial almacenado
-        const dayOfWeek = day.getDay()
-        const daysSinceStart = Math.floor((day.getTime() - new Date(progress.startDate).getTime()) / (1000 * 60 * 60 * 24))
-        
-        // Simular algunos hits para mostrar los colores (solo para demo)
-        if (daysSinceStart >= 0 && daysSinceStart < 30) {
-          // Simular algunos días con hits para mostrar colores (usando fecha para ser consistente)
-          const dayHash = day.getDate() + day.getMonth() * 31
-          if (dayOfWeek === 0 || dayOfWeek === 6) { // Domingos y sábados
-            hits = (dayHash % 5) + 1 // 1-5 hits (consistente)
-          } else if (dayOfWeek === 3) { // Miércoles
-            hits = (dayHash % 3) + 1 // 1-3 hits (consistente)
-          }
-        }
+        // Para días pasados, mostrar 0 hits por defecto
+        // En el futuro, esto vendría de un historial almacenado
+        hits = 0
       }
       
       // Color coding based on hits
@@ -133,12 +121,12 @@ export default function SmokingReport() {
         
         <div className="grid grid-cols-2 gap-4 text-center">
           <div className="text-white p-4 border-2 border-white">
-            <div className="text-3xl font-bold font-mono">{totalHits}</div>
+            <div className="text-3xl font-bold font-mono">{progress.smokingHits}</div>
             <div className="text-xs font-mono uppercase tracking-wider">TOTAL HITS</div>
           </div>
           <div className="text-white p-4 border-2 border-white">
-            <div className="text-3xl font-bold font-mono">{daysWithHits}</div>
-            <div className="text-xs font-mono uppercase tracking-wider">DÍAS CON HITS</div>
+            <div className="text-3xl font-bold font-mono">{progress.dailyHits}</div>
+            <div className="text-xs font-mono uppercase tracking-wider">HITS HOY</div>
           </div>
         </div>
       </motion.div>
