@@ -10,7 +10,7 @@ import { format, subDays, eachDayOfInterval } from 'date-fns'
 import { es, enUS } from 'date-fns/locale'
 
 export default function ProgressTracker() {
-  const { progress, loading } = useProgress()
+  const { progress, loading, resetAchievements } = useProgress()
   const { language } = useLanguage()
   const t = useTranslations(language)
   const [selectedPeriod, setSelectedPeriod] = useState('7d')
@@ -215,20 +215,28 @@ export default function ProgressTracker() {
               <p className="text-sm font-mono uppercase tracking-wider opacity-70">¡Continúa tu progreso para desbloquear logros!</p>
             </div>
           ) : (
-            progress.achievements.slice(-3).reverse().map((achievement) => (
-              <div key={achievement.id} className="p-3 bg-white text-black border-2 border-white">
-                <div className="flex items-center">
-                  <Award className="w-5 h-5 text-black mr-3" />
-                  <div>
-                    <div className="font-bold font-mono uppercase tracking-wider text-black">{achievement.title}</div>
-                    <div className="text-sm font-mono uppercase tracking-wider text-black opacity-70">{achievement.description}</div>
-                    <div className="text-xs font-mono uppercase tracking-wider text-black opacity-50">
-                      {format(new Date(achievement.date), 'dd/MM/yyyy', { locale })}
+            <>
+              {progress.achievements.slice(-3).reverse().map((achievement) => (
+                <div key={achievement.id} className="p-3 bg-white text-black border-2 border-white">
+                  <div className="flex items-center">
+                    <Award className="w-5 h-5 text-black mr-3" />
+                    <div>
+                      <div className="font-bold font-mono uppercase tracking-wider text-black">{achievement.title}</div>
+                      <div className="text-sm font-mono uppercase tracking-wider text-black opacity-70">{achievement.description}</div>
+                      <div className="text-xs font-mono uppercase tracking-wider text-black opacity-50">
+                        {format(new Date(achievement.date), 'dd/MM/yyyy', { locale })}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))
+              ))}
+              <button
+                onClick={resetAchievements}
+                className="w-full py-3 px-4 bg-black text-white border-2 border-white font-mono uppercase tracking-wider text-sm font-bold hover:bg-white hover:text-black transition-all btn-touch"
+              >
+                Reset Logros
+              </button>
+            </>
           )}
         </div>
       </motion.div>

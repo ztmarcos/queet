@@ -197,14 +197,7 @@ export default function Dashboard() {
               </button>
             </div>
             
-            <div className="flex space-x-3">
-              <button
-                onClick={resetAchievements}
-                className="flex-1 py-3 px-4 bg-black text-white border-2 border-white font-mono uppercase tracking-wider text-sm font-bold hover:bg-white hover:text-black transition-all btn-touch"
-              >
-                Reset Logros
-              </button>
-            </div>
+
             
             <button
               onClick={handleReset}
