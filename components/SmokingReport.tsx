@@ -157,7 +157,7 @@ export default function SmokingReport() {
                       <motion.div
                         key={dayIndex}
                         whileTap={{ scale: 0.9 }}
-                        className={`w-4 h-4 ${day.color} cursor-pointer transition-all duration-300 shadow-sm ${
+                        className={`w-3 h-3 rounded-full ${day.color} cursor-pointer transition-all duration-300 shadow-sm ${
                           hoveredDay === day ? 'ring-2 ring-yellow-400 shadow-lg scale-110' : ''
                         } ${isSameDay(day.date, new Date()) ? 'ring-2 ring-blue-400' : ''}`}
                         style={{
