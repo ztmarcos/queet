@@ -152,12 +152,12 @@ export default function SmokingReport() {
                 </div>
                 
                                   {/* Days Grid */}
-                  <div className="grid grid-cols-7 gap-1 justify-items-center">
+                  <div className="grid grid-cols-7 gap-0.5 justify-items-center">
                     {monthDays.map((day, dayIndex) => (
                       <motion.div
                         key={dayIndex}
                         whileTap={{ scale: 0.9 }}
-                        className={`w-3 h-3 rounded-full ${day.color} cursor-pointer transition-all duration-300 shadow-sm ${
+                        className={`w-2.5 h-2.5 rounded-full ${day.color} cursor-pointer transition-all duration-300 shadow-sm ${
                           hoveredDay === day ? 'ring-2 ring-yellow-400 shadow-lg scale-110' : ''
                         } ${isSameDay(day.date, new Date()) ? 'ring-2 ring-blue-400' : ''}`}
                         style={{
