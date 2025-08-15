@@ -152,7 +152,7 @@ export default function SmokingReport() {
                 </div>
                 
                                   {/* Days Grid */}
-                  <div className="grid grid-cols-7 gap-0.5 justify-items-center">
+                  <div className="flex flex-wrap gap-0.5 justify-start">
                     {monthDays.map((day, dayIndex) => (
                       <motion.div
                         key={dayIndex}
