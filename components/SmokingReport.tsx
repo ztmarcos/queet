@@ -98,11 +98,14 @@ export default function SmokingReport() {
   const maxHits = Math.max(...yearData.map(day => day.hits))
   
   // Debug: Log para verificar que los datos se están generando
+  const todayData = yearData.find(day => isSameDay(day.date, new Date()))
   console.log('SmokingReport Debug:', {
     totalDays: yearData.length,
     daysWithHits,
     totalHits,
     maxHits,
+    todayData: todayData ? { date: todayData.date.toISOString().split('T')[0], hits: todayData.hits, color: todayData.color } : 'Not found',
+    progressDailyHits: progress.dailyHits,
     sampleDays: yearData.slice(0, 5).map(d => ({ date: d.date.toISOString().split('T')[0], hits: d.hits, color: d.color }))
   })
 
@@ -167,7 +170,7 @@ export default function SmokingReport() {
                         whileTap={{ scale: 0.9 }}
                         className={`w-4 h-4 ${day.color} border-2 border-white cursor-pointer transition-all duration-300 shadow-sm ${
                           hoveredDay === day ? 'ring-2 ring-yellow-400 shadow-lg scale-110' : ''
-                        } ${isSameDay(day.date, new Date()) ? 'ring-2 ring-yellow-400' : ''}`}
+                        } ${isSameDay(day.date, new Date()) ? 'ring-2 ring-blue-400' : ''}`}
                         onMouseEnter={() => setHoveredDay(day)}
                         onMouseLeave={() => setHoveredDay(null)}
                         onClick={() => setSelectedDay(day)}
