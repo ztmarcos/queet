@@ -108,15 +108,15 @@ export default function ProgressTracker() {
                 {item.day}
               </div>
               <div className="flex-1">
-                <div className="relative h-8 bg-white border-2 border-white overflow-hidden">
+                <div className="relative h-8 bg-black border-2 border-white overflow-hidden">
                   <div
                     className={`absolute top-0 left-0 h-full transition-all duration-500 ${
-                      item.isToday ? 'bg-black' : 'bg-black'
+                      item.isToday ? 'bg-white' : 'bg-white'
                     }`}
                     style={{ width: `${Math.min(100, (item.value / Math.max(progress.currentStreak, 1)) * 100)}%` }}
                   />
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-xs font-bold font-mono uppercase tracking-wider text-black">
+                    <span className="text-xs font-bold font-mono uppercase tracking-wider text-white">
                       {item.value}
                     </span>
                   </div>

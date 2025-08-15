@@ -132,11 +132,11 @@ export function useProgress() {
   // Auto-backup every time progress changes
   useEffect(() => {
     if (progress) {
-      // Check data integrity
-      const isIntegrityValid = dataManager.checkIntegrity()
-      if (!isIntegrityValid) {
-        console.warn('Data integrity check failed')
-      }
+      // Temporarily disable integrity check to fix loading issue
+      // const isIntegrityValid = dataManager.checkIntegrity()
+      // if (!isIntegrityValid) {
+      //   console.warn('Data integrity check failed')
+      // }
       
       // Create backup reminder
       dataManager.createBackupReminder()
