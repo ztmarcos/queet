@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { Calendar, BarChart3 } from 'lucide-react'
 import { useProgress } from '@/hooks/useProgress'
@@ -37,7 +37,7 @@ export default function SmokingReport() {
     )
   }
 
-  const generateYearData = (): DayData[] => {
+  const generateYearData = useCallback((): DayData[] => {
     const startDate = startOfYear(new Date())
     const endDate = endOfYear(new Date())
     const days = eachDayOfInterval({ start: startDate, end: endDate })
@@ -89,7 +89,7 @@ export default function SmokingReport() {
         tooltip
       }
     })
-  }
+  }, [progress.dailyHits, progress.startDate, locale])
 
   const yearData = generateYearData()
   const totalHits = yearData.reduce((sum, day) => sum + day.hits, 0)
