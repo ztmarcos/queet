@@ -33,6 +33,35 @@ export default function Dashboard() {
     setShowResetConfirm(false)
   }
 
+  const resetEverything = () => {
+    if (!progress) return
+
+    const today = new Date()
+    const updatedProgress = {
+      ...progress,
+      currentStreak: 0,
+      longestStreak: 0,
+      totalDays: 0,
+      smokingHits: 0,
+      dailyHits: 0,
+      weedPurchases: 0,
+      totalMoneySpent: 0,
+      startDate: today.toISOString(),
+      lastResetDate: today.toISOString(),
+      lastHitDate: today.toISOString(),
+      lastPurchaseDate: today.toISOString(),
+      achievements: [],
+      triggers: [],
+    }
+
+    // Update localStorage
+    const { progressStorage } = require('@/lib/localStorage')
+    progressStorage.set(updatedProgress)
+    
+    // Force reload to update all components
+    window.location.reload()
+  }
+
   const handlePurchaseClick = () => {
     setShowPurchaseModal(true)
   }
@@ -162,7 +191,7 @@ export default function Dashboard() {
               
               <button
                 onClick={handlePurchaseClick}
-                className="flex-1 py-3 px-4 bg-green-600 text-white border-2 border-green-600 font-mono uppercase tracking-wider text-sm font-bold hover:bg-white hover:text-green-600 transition-all btn-touch"
+                className="flex-1 py-3 px-4 bg-black text-green-500 border-2 border-white font-mono uppercase tracking-wider text-sm font-bold hover:bg-white hover:text-green-600 transition-all btn-touch"
               >
                 $
               </button>
@@ -335,7 +364,7 @@ export default function Dashboard() {
                   Cancelar
                 </button>
                 <button
-                  onClick={confirmReset}
+                  onClick={resetEverything}
                   className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 border-2 border-red-600 hover:border-red-700 transition-all font-mono uppercase tracking-wider btn-touch"
                 >
                   Reiniciar Todo
