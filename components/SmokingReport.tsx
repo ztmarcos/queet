@@ -110,53 +110,13 @@ export default function SmokingReport() {
         </h3>
         
         <div className="grid grid-cols-2 gap-4 text-center">
-          <div className="bg-gradient-to-br from-yellow-400 to-orange-500 text-black p-4 border-2 border-white shadow-brutalist">
+          <div className="text-white p-4 border-2 border-white">
             <div className="text-3xl font-bold font-mono">{totalHits}</div>
             <div className="text-xs font-mono uppercase tracking-wider">TOTAL HITS</div>
           </div>
-          <div className="bg-gradient-to-br from-green-400 to-blue-500 text-black p-4 border-2 border-white shadow-brutalist">
+          <div className="text-white p-4 border-2 border-white">
             <div className="text-3xl font-bold font-mono">{daysWithHits}</div>
             <div className="text-xs font-mono uppercase tracking-wider">DÍAS CON HITS</div>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Legend */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="card-mobile border-3 border-white shadow-brutalist"
-      >
-        <h4 className="text-sm font-semibold mb-3 flex items-center font-mono uppercase tracking-wider">
-          <Calendar className="w-4 h-4 mr-2 text-white" />
-          LEGENDA
-        </h4>
-        
-        <div className="grid grid-cols-2 gap-3 text-xs">
-          <div className="flex items-center space-x-2">
-            <div className="w-4 h-4 bg-gray-400 border border-white"></div>
-            <span className="font-mono uppercase tracking-wider text-white">Antes inicio</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-4 h-4 bg-slate-700 border border-white"></div>
-            <span className="font-mono uppercase tracking-wider text-white">No fumó</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-4 h-4 bg-yellow-400 border border-white"></div>
-            <span className="font-mono uppercase tracking-wider text-white">1-3 hits</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-4 h-4 bg-green-500 border border-white"></div>
-            <span className="font-mono uppercase tracking-wider text-white">4-6 hits</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-4 h-4 bg-orange-500 border border-white"></div>
-            <span className="font-mono uppercase tracking-wider text-white">7-9 hits</span>
-          </div>
-          <div className="flex items-center space-x-2">
-            <div className="w-4 h-4 bg-red-500 border border-white"></div>
-            <span className="font-mono uppercase tracking-wider text-white">10+ hits</span>
           </div>
         </div>
       </motion.div>
@@ -213,6 +173,41 @@ export default function SmokingReport() {
         {/* Legend for grid */}
         <div className="mt-4 text-xs font-mono uppercase tracking-wider text-white opacity-70">
           Cada punto = 1 día • Hover para ver detalles • Click para expandir
+        </div>
+        
+        {/* Legend */}
+        <div className="mt-6 pt-4 border-t-2 border-white">
+          <h4 className="text-sm font-semibold mb-3 flex items-center font-mono uppercase tracking-wider text-white">
+            <Calendar className="w-4 h-4 mr-2 text-white" />
+            LEGENDA
+          </h4>
+          
+          <div className="grid grid-cols-2 gap-3 text-xs">
+            <div className="flex items-center space-x-2">
+              <div className="w-4 h-4 bg-gray-400 border border-white"></div>
+              <span className="font-mono uppercase tracking-wider text-white">Antes inicio</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-4 h-4 bg-slate-700 border border-white"></div>
+              <span className="font-mono uppercase tracking-wider text-white">No fumó</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-4 h-4 bg-yellow-400 border border-white"></div>
+              <span className="font-mono uppercase tracking-wider text-white">1-3 hits</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-4 h-4 bg-green-500 border border-white"></div>
+              <span className="font-mono uppercase tracking-wider text-white">4-6 hits</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-4 h-4 bg-orange-500 border border-white"></div>
+              <span className="font-mono uppercase tracking-wider text-white">7-9 hits</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-4 h-4 bg-red-500 border border-white"></div>
+              <span className="font-mono uppercase tracking-wider text-white">10+ hits</span>
+            </div>
+          </div>
         </div>
       </motion.div>
 
