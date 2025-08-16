@@ -400,7 +400,12 @@ export function useProgress() {
 
     try {
       const today = new Date()
-      const isNewDay = today.toDateString() !== new Date(progress.lastHitDate).toDateString()
+      const todayString = today.toDateString()
+      const lastHitDateString = new Date(progress.lastHitDate).toDateString()
+      const isNewDay = todayString !== lastHitDateString
+      
+      console.log('Adding hit - Today:', todayString, 'Last hit:', lastHitDateString, 'Is new day:', isNewDay)
+      console.log('Current dailyHits:', progress.dailyHits)
       
       const updatedProgress = {
         ...progress,
@@ -412,6 +417,8 @@ export function useProgress() {
           [today.toISOString().split('T')[0]]: (progress.dailyHistory[today.toISOString().split('T')[0]] || 0) + 1
         }
       }
+
+      console.log('Updated dailyHits:', updatedProgress.dailyHits)
 
       progressStorage.set(updatedProgress)
       setProgress(updatedProgress)
