@@ -16,6 +16,7 @@ export interface ProgressData {
   lastPurchaseDate: string
   triggers: Trigger[]
   achievements: Achievement[]
+  dailyHistory: Record<string, number> // New field to store daily hits history
 }
 
 export interface Trigger {
@@ -67,6 +68,15 @@ const mockProgress: ProgressData = {
     },
   ],
   achievements: [],
+  dailyHistory: {
+    // Mock some historical data for demonstration
+    [new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]]: 2,
+    [new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]]: 1,
+    [new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]]: 0,
+    [new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]]: 3,
+    [new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]]: 1,
+    [new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]]: 0,
+  },
 }
 
 export function useProgress() {
@@ -101,6 +111,7 @@ export function useProgress() {
           weedPurchases: savedProgress.weedPurchases || 0,
           totalMoneySpent: savedProgress.totalMoneySpent || 0,
           lastPurchaseDate: savedProgress.lastPurchaseDate || new Date().toISOString(),
+          dailyHistory: savedProgress.dailyHistory || {},
         }
         
         // Clean duplicate achievements if they exist
@@ -120,6 +131,15 @@ export function useProgress() {
           savedProgress = {
             ...savedProgress,
             achievements: []
+          }
+          progressStorage.set(savedProgress)
+        }
+        
+        // Migrate existing data to include dailyHistory if missing
+        if (!savedProgress.dailyHistory) {
+          savedProgress = {
+            ...savedProgress,
+            dailyHistory: {}
           }
           progressStorage.set(savedProgress)
         }
@@ -245,6 +265,7 @@ export function useProgress() {
           lastResetDate: today.toISOString(),
           triggers: [],
           achievements: [],
+          dailyHistory: {}, // Reset daily history on reset
         }
         progressStorage.set(updatedProgress)
         setProgress(updatedProgress)
@@ -267,6 +288,7 @@ export function useProgress() {
         lastResetDate: today.toISOString(),
         triggers: reset ? [] : progress.triggers,
         achievements: reset ? [] : progress.achievements,
+        dailyHistory: reset ? {} : progress.dailyHistory, // Preserve daily history
       }
 
       progressStorage.set(updatedProgress)
@@ -313,6 +335,10 @@ export function useProgress() {
           totalDays: newTotalDays,
           lastResetDate: today.toISOString(),
           dailyHits: 0, // Reset daily hits
+          dailyHistory: { // Update daily history
+            ...progress.dailyHistory,
+            [today.toISOString().split('T')[0]]: (progress.dailyHistory[today.toISOString().split('T')[0]] || 0) + 1
+          }
         }
 
         // Always use localStorage (no Firebase)
@@ -381,6 +407,10 @@ export function useProgress() {
         smokingHits: progress.smokingHits + 1,
         dailyHits: isNewDay ? 1 : progress.dailyHits + 1,
         lastHitDate: today.toISOString(),
+        dailyHistory: { // Update daily history
+          ...progress.dailyHistory,
+          [today.toISOString().split('T')[0]]: (progress.dailyHistory[today.toISOString().split('T')[0]] || 0) + 1
+        }
       }
 
       progressStorage.set(updatedProgress)
@@ -400,6 +430,10 @@ export function useProgress() {
         ...progress,
         smokingHits: Math.max(0, progress.smokingHits - 1),
         dailyHits: Math.max(0, progress.dailyHits - 1),
+        dailyHistory: { // Update daily history
+          ...progress.dailyHistory,
+          [new Date().toISOString().split('T')[0]]: Math.max(0, (progress.dailyHistory[new Date().toISOString().split('T')[0]] || 0) - 1)
+        }
       }
 
       progressStorage.set(updatedProgress)

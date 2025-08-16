@@ -39,13 +39,14 @@ export default function SmokingReport() {
       
       let hits = 0
       
-      // Solo usar datos reales existentes
+      // Usar datos del historial diario
+      const dateKey = format(day, 'yyyy-MM-dd')
+      
       if (isToday && isAfterStart) {
         hits = progress.dailyHits
       } else if (day < new Date() && isAfterStart) {
-        // Para días pasados, mostrar 0 hits por defecto
-        // En el futuro, esto vendría de un historial almacenado
-        hits = 0
+        // Para días pasados, usar el historial almacenado
+        hits = progress.dailyHistory?.[dateKey] || 0
       }
       
       // Color coding based on hits

@@ -122,6 +122,7 @@ export const progressStorage = {
       weedPurchases: 0,
       totalMoneySpent: 0,
       lastPurchaseDate: new Date().toISOString(),
+      dailyHistory: {},
     }
 
     progressStorage.set(defaultProgress)
