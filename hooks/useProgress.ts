@@ -335,9 +335,9 @@ export function useProgress() {
           totalDays: newTotalDays,
           lastResetDate: today.toISOString(),
           dailyHits: 0, // Reset daily hits
-          dailyHistory: { // Update daily history
+          dailyHistory: { // Update daily history - save 0 hits for today
             ...progress.dailyHistory,
-            [today.toISOString().split('T')[0]]: (progress.dailyHistory[today.toISOString().split('T')[0]] || 0) + 1
+            [today.toISOString().split('T')[0]]: 0
           }
         }
 
