@@ -32,17 +32,6 @@ export default function SmokingReport() {
     const endDate = endOfYear(new Date())
     const days = eachDayOfInterval({ start: startDate, end: endDate })
     
-    // Datos de ejemplo fijos para mostrar colores
-    const exampleData: Record<string, number> = {
-      '2025-08-10': 2, // Amarillo
-      '2025-08-11': 1, // Amarillo
-      '2025-08-12': 0, // Gris oscuro
-      '2025-08-13': 3, // Amarillo
-      '2025-08-14': 1, // Amarillo
-      '2025-08-15': 0, // Gris oscuro
-      '2025-08-16': 1, // Amarillo (hoy)
-    }
-    
     return days.map(day => {
       const isToday = isSameDay(day, new Date())
       const userStartDate = new Date(progress.startDate)
@@ -52,10 +41,11 @@ export default function SmokingReport() {
       const dateKey = format(day, 'yyyy-MM-dd')
       
       if (isToday && isAfterStart) {
+        // Para hoy, usar el valor actual de dailyHits
         hits = progress.dailyHits
       } else if (day < new Date() && isAfterStart) {
-        // Usar datos de ejemplo para días pasados
-        hits = exampleData[dateKey] || 0
+        // Para días pasados, usar los datos del dailyHistory
+        hits = progress.dailyHistory[dateKey] || 0
       }
       
       // Color coding based on hits

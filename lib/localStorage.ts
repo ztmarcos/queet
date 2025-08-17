@@ -338,6 +338,31 @@ export const dataManager = {
     } catch (error) {
       console.error('Error creating backup reminder:', error)
     }
+  },
+
+  // Complete system reset
+  completeReset: (): void => {
+    try {
+      // Clear all data
+      dataManager.clearAll()
+      
+      // Clear any additional keys that might exist
+      const keysToRemove = []
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i)
+        if (key && key.includes('queet-weed')) {
+          keysToRemove.push(key)
+        }
+      }
+      
+      keysToRemove.forEach(key => {
+        localStorage.removeItem(key)
+      })
+      
+      console.log('Complete system reset performed')
+    } catch (error) {
+      console.error('Error during complete reset:', error)
+    }
   }
 }
 

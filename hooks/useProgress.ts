@@ -143,6 +143,20 @@ export function useProgress() {
           }
           progressStorage.set(savedProgress)
         }
+        
+        // Initialize dailyHistory with current dailyHits if it's empty for today
+        const today = new Date()
+        const todayKey = today.toISOString().split('T')[0]
+        if (!savedProgress.dailyHistory[todayKey] && savedProgress.dailyHits > 0) {
+          savedProgress = {
+            ...savedProgress,
+            dailyHistory: {
+              ...savedProgress.dailyHistory,
+              [todayKey]: savedProgress.dailyHits
+            }
+          }
+          progressStorage.set(savedProgress)
+        }
       }
       
       setProgress(savedProgress)
@@ -404,21 +418,37 @@ export function useProgress() {
       const lastHitDateString = new Date(progress.lastHitDate).toDateString()
       const isNewDay = todayString !== lastHitDateString
       
-      console.log('Adding hit - Today:', todayString, 'Last hit:', lastHitDateString, 'Is new day:', isNewDay)
+      console.log('=== ADDING SMOKING HIT ===')
+      console.log('Today:', todayString)
+      console.log('Last hit date:', lastHitDateString)
+      console.log('Is new day:', isNewDay)
       console.log('Current dailyHits:', progress.dailyHits)
+      console.log('Current smokingHits:', progress.smokingHits)
+      
+      // Calculate new daily hits
+      let newDailyHits = 1
+      if (!isNewDay) {
+        newDailyHits = progress.dailyHits + 1
+      }
+      
+      console.log('New dailyHits will be:', newDailyHits)
       
       const updatedProgress = {
         ...progress,
         smokingHits: progress.smokingHits + 1,
-        dailyHits: isNewDay ? 1 : progress.dailyHits + 1,
+        dailyHits: newDailyHits,
         lastHitDate: today.toISOString(),
-        dailyHistory: { // Update daily history
+        dailyHistory: {
           ...progress.dailyHistory,
-          [today.toISOString().split('T')[0]]: (progress.dailyHistory[today.toISOString().split('T')[0]] || 0) + 1
+          [today.toISOString().split('T')[0]]: newDailyHits
         }
       }
 
-      console.log('Updated dailyHits:', updatedProgress.dailyHits)
+      console.log('Updated progress:', {
+        dailyHits: updatedProgress.dailyHits,
+        smokingHits: updatedProgress.smokingHits,
+        dailyHistory: updatedProgress.dailyHistory
+      })
 
       progressStorage.set(updatedProgress)
       setProgress(updatedProgress)
@@ -433,15 +463,38 @@ export function useProgress() {
     if (!progress) return
 
     try {
+      const today = new Date()
+      const todayString = today.toDateString()
+      const lastHitDateString = new Date(progress.lastHitDate).toDateString()
+      const isNewDay = todayString !== lastHitDateString
+      
+      console.log('=== SUBTRACTING SMOKING HIT ===')
+      console.log('Today:', todayString)
+      console.log('Last hit date:', lastHitDateString)
+      console.log('Is new day:', isNewDay)
+      console.log('Current dailyHits:', progress.dailyHits)
+      console.log('Current smokingHits:', progress.smokingHits)
+      
+      // Calculate new daily hits
+      let newDailyHits = Math.max(0, progress.dailyHits - 1)
+      
+      console.log('New dailyHits will be:', newDailyHits)
+      
       const updatedProgress = {
         ...progress,
         smokingHits: Math.max(0, progress.smokingHits - 1),
-        dailyHits: Math.max(0, progress.dailyHits - 1),
-        dailyHistory: { // Update daily history
+        dailyHits: newDailyHits,
+        dailyHistory: {
           ...progress.dailyHistory,
-          [new Date().toISOString().split('T')[0]]: Math.max(0, (progress.dailyHistory[new Date().toISOString().split('T')[0]] || 0) - 1)
+          [today.toISOString().split('T')[0]]: newDailyHits
         }
       }
+
+      console.log('Updated progress:', {
+        dailyHits: updatedProgress.dailyHits,
+        smokingHits: updatedProgress.smokingHits,
+        dailyHistory: updatedProgress.dailyHistory
+      })
 
       progressStorage.set(updatedProgress)
       setProgress(updatedProgress)
@@ -449,6 +502,38 @@ export function useProgress() {
     } catch (error) {
       console.error('Error subtracting smoking hit:', error)
       toast.error('Error al restar hit')
+    }
+  }, [progress])
+
+  const resetEverything = useCallback(async () => {
+    if (!progress) return
+
+    try {
+      const today = new Date()
+      const updatedProgress = {
+        ...progress,
+        currentStreak: 0,
+        longestStreak: 0,
+        totalDays: 0,
+        smokingHits: 0,
+        dailyHits: 0,
+        weedPurchases: 0,
+        totalMoneySpent: 0,
+        startDate: today.toISOString(),
+        lastResetDate: today.toISOString(),
+        lastHitDate: today.toISOString(),
+        lastPurchaseDate: today.toISOString(),
+        achievements: [],
+        triggers: [],
+        dailyHistory: {}, // Reset daily history completely
+      }
+
+      progressStorage.set(updatedProgress)
+      setProgress(updatedProgress)
+      toast.success('Progreso completamente reiniciado')
+    } catch (error) {
+      console.error('Error resetting everything:', error)
+      toast.error('Error al reiniciar progreso')
     }
   }, [progress])
 
@@ -503,5 +588,6 @@ export function useProgress() {
     resetAchievements,
     reportWeedPurchase,
     autoUpdateStreak,
+    resetEverything,
   }
 }

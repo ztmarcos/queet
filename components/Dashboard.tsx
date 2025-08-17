@@ -11,7 +11,7 @@ import { es, enUS } from 'date-fns/locale'
 import toast from 'react-hot-toast'
 
 export default function Dashboard() {
-  const { progress, loading, updateStreak, addSmokingHit, subtractSmokingHit, resetAchievements, reportWeedPurchase } = useProgress()
+  const { progress, loading, updateStreak, addSmokingHit, subtractSmokingHit, resetAchievements, reportWeedPurchase, resetEverything } = useProgress()
   const { language } = useLanguage()
   const t = useTranslations(language)
   const [showResetConfirm, setShowResetConfirm] = useState(false)
@@ -29,37 +29,8 @@ export default function Dashboard() {
   }
 
   const confirmReset = () => {
-    updateStreak(true)
+    resetEverything()
     setShowResetConfirm(false)
-  }
-
-  const resetEverything = () => {
-    if (!progress) return
-
-    const today = new Date()
-    const updatedProgress = {
-      ...progress,
-      currentStreak: 0,
-      longestStreak: 0,
-      totalDays: 0,
-      smokingHits: 0,
-      dailyHits: 0,
-      weedPurchases: 0,
-      totalMoneySpent: 0,
-      startDate: today.toISOString(),
-      lastResetDate: today.toISOString(),
-      lastHitDate: today.toISOString(),
-      lastPurchaseDate: today.toISOString(),
-      achievements: [],
-      triggers: [],
-    }
-
-    // Update localStorage
-    const { progressStorage } = require('@/lib/localStorage')
-    progressStorage.set(updatedProgress)
-    
-    // Force reload to update all components
-    window.location.reload()
   }
 
   const handlePurchaseClick = () => {
@@ -181,6 +152,13 @@ export default function Dashboard() {
               {t.dashboard.update}
             </button>
             
+            <button
+              onClick={addSmokingHit}
+              className="w-full py-3 px-6 bg-green-600 text-white border-2 border-green-600 font-mono uppercase tracking-wider text-sm font-bold hover:bg-green-700 transition-all btn-touch"
+            >
+              + HIT
+            </button>
+            
             <div className="flex space-x-3">
               <button
                 onClick={subtractSmokingHit}
@@ -196,6 +174,34 @@ export default function Dashboard() {
                 $
               </button>
             </div>
+            
+            <button
+              onClick={() => {
+                console.log('=== DEBUG INFO ===')
+                console.log('Progress:', progress)
+                console.log('Daily History:', progress?.dailyHistory)
+                console.log('Today key:', new Date().toISOString().split('T')[0])
+                console.log('Today hits in history:', progress?.dailyHistory[new Date().toISOString().split('T')[0]])
+                toast.success('Debug info logged to console')
+              }}
+              className="w-full py-2 px-4 bg-blue-600 text-white border-2 border-blue-600 font-mono uppercase tracking-wider text-xs font-bold hover:bg-blue-700 transition-all btn-touch"
+            >
+              DEBUG INFO
+            </button>
+            
+            <button
+              onClick={() => {
+                const { dataManager } = require('@/lib/localStorage')
+                dataManager.completeReset()
+                toast.success('Sistema completamente reseteado. Recarga la página.')
+                setTimeout(() => {
+                  window.location.reload()
+                }, 2000)
+              }}
+              className="w-full py-2 px-4 bg-red-800 text-white border-2 border-red-800 font-mono uppercase tracking-wider text-xs font-bold hover:bg-red-900 transition-all btn-touch"
+            >
+              RESET COMPLETO
+            </button>
             
 
             
@@ -357,7 +363,7 @@ export default function Dashboard() {
                   Cancelar
                 </button>
                 <button
-                  onClick={resetEverything}
+                  onClick={confirmReset}
                   className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 border-2 border-red-600 hover:border-red-700 transition-all font-mono uppercase tracking-wider btn-touch"
                 >
                   Reiniciar Todo
