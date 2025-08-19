@@ -298,19 +298,23 @@ export default function SmokingReport() {
               {format(selectedDay.date, 'EEEE, d MMMM yyyy', { locale }).toUpperCase()}
             </h4>
             
-            {/* Obtener hits actualizados para este día */}
+            {/* Usar los datos del selectedDay que ya están correctos */}
             {(() => {
-              const currentHits = getCurrentHitsForDay(selectedDay.date)
               const isToday = isSameDay(selectedDay.date, new Date())
-              const todayKey = format(new Date(), 'yyyy-MM-dd')
+              
+              console.log('Selected day info:', {
+                selectedDay,
+                hits: selectedDay.hits,
+                isToday
+              })
               
               return (
                 <>
                   <div className="text-3xl font-bold font-mono text-white mb-2">
-                    {currentHits}
+                    {selectedDay.hits}
                   </div>
                   <div className="text-sm font-mono uppercase tracking-wider text-white opacity-70 mb-2">
-                    {currentHits === 0 ? 'NO FUMÓ' : currentHits === 1 ? 'HIT' : 'HITS'}
+                    {selectedDay.hits === 0 ? 'NO FUMÓ' : selectedDay.hits === 1 ? 'HIT' : 'HITS'}
                     {isToday && ' (HOY)'}
                   </div>
                   
@@ -321,12 +325,10 @@ export default function SmokingReport() {
                     </div>
                   )}
                   
-                  {/* Mostrar diferencia si hay discrepancia */}
-                  {selectedDay.hits !== currentHits && (
-                    <div className="text-xs font-mono uppercase tracking-wider text-yellow-400 mb-3">
-                      Datos actualizados
-                    </div>
-                  )}
+                  {/* Mostrar información de debug */}
+                  <div className="text-xs font-mono uppercase tracking-wider text-blue-400 mb-3">
+                    Color: {selectedDay.color} | Tooltip: {selectedDay.tooltip}
+                  </div>
                 </>
               )
             })()}
