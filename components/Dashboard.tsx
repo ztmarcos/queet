@@ -176,41 +176,83 @@ export default function Dashboard() {
             </div>
             
             <button
-              onClick={() => {
-                console.log('=== DEBUG INFO ===')
-                console.log('Progress:', progress)
-                console.log('Daily History:', progress?.dailyHistory)
-                console.log('Today key:', new Date().toISOString().split('T')[0])
-                console.log('Today hits in history:', progress?.dailyHistory[new Date().toISOString().split('T')[0]])
-                toast.success('Debug info logged to console')
-              }}
-              className="w-full py-2 px-4 bg-blue-600 text-white border-2 border-blue-600 font-mono uppercase tracking-wider text-xs font-bold hover:bg-blue-700 transition-all btn-touch"
-            >
-              DEBUG INFO
-            </button>
-            
-            <button
-              onClick={() => {
-                const { dataManager } = require('@/lib/localStorage')
-                dataManager.completeReset()
-                toast.success('Sistema completamente reseteado. Recarga la página.')
-                setTimeout(() => {
-                  window.location.reload()
-                }, 2000)
-              }}
-              className="w-full py-2 px-4 bg-red-800 text-white border-2 border-red-800 font-mono uppercase tracking-wider text-xs font-bold hover:bg-red-900 transition-all btn-touch"
-            >
-              RESET COMPLETO
-            </button>
-            
-
-            
-            <button
               onClick={handleReset}
               className="w-full py-3 px-6 bg-black text-white border-2 border-white font-mono uppercase tracking-wider text-sm font-bold hover:bg-white hover:text-black transition-all btn-touch"
             >
               {t.dashboard.reset}
             </button>
+            
+            {/* Debug Tools - Solo para desarrollo */}
+            <div className="border-t-2 border-white pt-3">
+              <div className="text-xs text-white font-mono uppercase tracking-wider opacity-70 mb-2">
+                HERRAMIENTAS DE DESARROLLO
+              </div>
+              
+              <button
+                onClick={() => {
+                  console.log('=== DEBUG INFO ===')
+                  console.log('Progress:', progress)
+                  console.log('Daily History:', progress?.dailyHistory)
+                  console.log('Today key:', new Date().toISOString().split('T')[0])
+                  console.log('Today hits in history:', progress?.dailyHistory[new Date().toISOString().split('T')[0]])
+                  toast.success('Debug info logged to console')
+                }}
+                className="w-full py-2 px-4 bg-blue-600 text-white border-2 border-blue-600 font-mono uppercase tracking-wider text-xs font-bold hover:bg-blue-700 transition-all btn-touch mb-2"
+              >
+                DEBUG INFO
+              </button>
+              
+              <button
+                onClick={() => {
+                  const { dataManager } = require('@/lib/localStorage')
+                  const validation = dataManager.validateData()
+                  console.log('=== DATA VALIDATION ===')
+                  console.log('Is valid:', validation.isValid)
+                  console.log('Issues:', validation.issues)
+                  
+                  if (validation.isValid) {
+                    toast.success('✅ Datos válidos')
+                  } else {
+                    toast.error(`❌ Problemas encontrados: ${validation.issues.join(', ')}`)
+                  }
+                }}
+                className="w-full py-2 px-4 bg-yellow-600 text-white border-2 border-yellow-600 font-mono uppercase tracking-wider text-xs font-bold hover:bg-yellow-700 transition-all btn-touch mb-2"
+              >
+                VALIDAR DATOS
+              </button>
+              
+              <button
+                onClick={() => {
+                  const { dataManager } = require('@/lib/localStorage')
+                  const success = dataManager.repairData()
+                  if (success) {
+                    toast.success('✅ Datos reparados. Recarga la página.')
+                    setTimeout(() => {
+                      window.location.reload()
+                    }, 2000)
+                  } else {
+                    toast.error('❌ Error al reparar datos')
+                  }
+                }}
+                className="w-full py-2 px-4 bg-purple-600 text-white border-2 border-purple-600 font-mono uppercase tracking-wider text-xs font-bold hover:bg-purple-700 transition-all btn-touch mb-2"
+              >
+                REPARAR DATOS
+              </button>
+              
+              <button
+                onClick={() => {
+                  const { dataManager } = require('@/lib/localStorage')
+                  dataManager.completeReset()
+                  toast.success('Sistema completamente reseteado. Recarga la página.')
+                  setTimeout(() => {
+                    window.location.reload()
+                  }, 2000)
+                }}
+                className="w-full py-2 px-4 bg-red-800 text-white border-2 border-red-800 font-mono uppercase tracking-wider text-xs font-bold hover:bg-red-900 transition-all btn-touch"
+              >
+                RESET COMPLETO
+              </button>
+            </div>
           </div>
         </motion.div>
 

@@ -24,18 +24,83 @@ export const progressStorage = {
   get: (): ProgressData | null => {
     try {
       const data = localStorage.getItem(STORAGE_KEYS.PROGRESS)
-      return data ? JSON.parse(data) : null
-    } catch (error) {
-      console.error('Error reading progress from localStorage:', error)
-      return null
-    }
+      if (!data) return null
+      
+      const parsed = JSON.parse(data)
+      
+      // Validate the parsed data has required fields
+      if (!parsed || typeof parsed !== 'object') {
+        console.warn('Invalid progress data format, clearing...')
+        progressStorage.reset()
+        return null
+      }
+      
+      // Ensure all required fields exist
+      const validated = {
+        startDate: parsed.startDate || new Date().toISOString(),
+        currentStreak: typeof parsed.currentStreak === 'number' ? parsed.currentStreak : 0,
+        longestStreak: typeof parsed.longestStreak === 'number' ? parsed.longestStreak : 0,
+        totalDays: typeof parsed.totalDays === 'number' ? parsed.totalDays : 0,
+        lastResetDate: parsed.lastResetDate || new Date().toISOString(),
+        smokingHits: typeof parsed.smokingHits === 'number' ? parsed.smokingHits : 0,
+        dailyHits: typeof parsed.dailyHits === 'number' ? parsed.dailyHits : 0,
+        lastHitDate: parsed.lastHitDate || new Date().toISOString(),
+        weedPurchases: typeof parsed.weedPurchases === 'number' ? parsed.weedPurchases : 0,
+        totalMoneySpent: typeof parsed.totalMoneySpent === 'number' ? parsed.totalMoneySpent : 0,
+        lastPurchaseDate: parsed.lastPurchaseDate || new Date().toISOString(),
+        triggers: Array.isArray(parsed.triggers) ? parsed.triggers : [],
+        achievements: Array.isArray(parsed.achievements) ? parsed.achievements : [],
+        dailyHistory: parsed.dailyHistory && typeof parsed.dailyHistory === 'object' ? parsed.dailyHistory : {},
+      }
+      
+      return validated
+          } catch (error: any) {
+        console.error('Error reading progress from localStorage:', error)
+        // If there's an error, clear the corrupted data
+        progressStorage.reset()
+        return null
+      }
   },
 
   set: (progress: ProgressData): void => {
     try {
-      localStorage.setItem(STORAGE_KEYS.PROGRESS, JSON.stringify(progress))
+      // Validate progress data before saving
+      if (!progress || typeof progress !== 'object') {
+        throw new Error('Invalid progress data')
+      }
+      
+      // Ensure all required fields exist
+      const validated = {
+        startDate: progress.startDate || new Date().toISOString(),
+        currentStreak: typeof progress.currentStreak === 'number' ? progress.currentStreak : 0,
+        longestStreak: typeof progress.longestStreak === 'number' ? progress.longestStreak : 0,
+        totalDays: typeof progress.totalDays === 'number' ? progress.totalDays : 0,
+        lastResetDate: progress.lastResetDate || new Date().toISOString(),
+        smokingHits: typeof progress.smokingHits === 'number' ? progress.smokingHits : 0,
+        dailyHits: typeof progress.dailyHits === 'number' ? progress.dailyHits : 0,
+        lastHitDate: progress.lastHitDate || new Date().toISOString(),
+        weedPurchases: typeof progress.weedPurchases === 'number' ? progress.weedPurchases : 0,
+        totalMoneySpent: typeof progress.totalMoneySpent === 'number' ? progress.totalMoneySpent : 0,
+        lastPurchaseDate: progress.lastPurchaseDate || new Date().toISOString(),
+        triggers: Array.isArray(progress.triggers) ? progress.triggers : [],
+        achievements: Array.isArray(progress.achievements) ? progress.achievements : [],
+        dailyHistory: progress.dailyHistory && typeof progress.dailyHistory === 'object' ? progress.dailyHistory : {},
+      }
+      
+      localStorage.setItem(STORAGE_KEYS.PROGRESS, JSON.stringify(validated))
     } catch (error) {
       console.error('Error saving progress to localStorage:', error)
+      // Try to save a backup of the current data
+      try {
+        const backup = {
+          ...progress,
+          _backupDate: new Date().toISOString(),
+          _error: error.message
+        }
+        localStorage.setItem(STORAGE_KEYS.PROGRESS + '_backup', JSON.stringify(backup))
+      } catch (backupError) {
+        console.error('Failed to create backup:', backupError)
+      }
     }
   },
 
@@ -362,6 +427,109 @@ export const dataManager = {
       console.log('Complete system reset performed')
     } catch (error) {
       console.error('Error during complete reset:', error)
+    }
+  },
+
+  // Repair corrupted data
+  repairData: (): boolean => {
+    try {
+      console.log('Attempting to repair corrupted data...')
+      
+      // Try to load current data
+      const currentProgress = progressStorage.get()
+      const currentUser = userStorage.get()
+      
+      // If data is corrupted, try to restore from backup
+      if (!currentProgress) {
+        const backupData = localStorage.getItem(STORAGE_KEYS.PROGRESS + '_backup')
+        if (backupData) {
+          try {
+            const backup = JSON.parse(backupData)
+            // Remove backup metadata
+            delete backup._backupDate
+            delete backup._error
+            progressStorage.set(backup)
+            console.log('Data restored from backup')
+            return true
+          } catch (backupError) {
+            console.error('Failed to restore from backup:', backupError)
+          }
+        }
+        
+        // If no backup, initialize fresh data
+        progressStorage.initialize()
+        console.log('Fresh data initialized')
+        return true
+      }
+      
+      // Validate and fix current data
+      const today = new Date()
+      const todayKey = today.toISOString().split('T')[0]
+      
+      // Ensure dailyHistory exists and has today's entry
+      if (!currentProgress.dailyHistory) {
+        currentProgress.dailyHistory = {}
+      }
+      
+      // Sync dailyHits with dailyHistory
+      if (currentProgress.dailyHistory[todayKey] !== undefined) {
+        currentProgress.dailyHits = currentProgress.dailyHistory[todayKey]
+      } else {
+        currentProgress.dailyHistory[todayKey] = currentProgress.dailyHits
+      }
+      
+      // Save repaired data
+      progressStorage.set(currentProgress)
+      console.log('Data repaired successfully')
+      return true
+      
+         } catch (error: any) {
+       console.error('Error repairing data:', error)
+       return false
+     }
+  },
+
+  // Validate data integrity
+  validateData: (): { isValid: boolean; issues: string[] } => {
+    const issues: string[] = []
+    
+    try {
+      const progress = progressStorage.get()
+      const user = userStorage.get()
+      
+      if (!progress) {
+        issues.push('No progress data found')
+      } else {
+        // Check required fields
+        if (!progress.startDate) issues.push('Missing startDate')
+        if (typeof progress.currentStreak !== 'number') issues.push('Invalid currentStreak')
+        if (typeof progress.dailyHits !== 'number') issues.push('Invalid dailyHits')
+        if (!progress.dailyHistory || typeof progress.dailyHistory !== 'object') {
+          issues.push('Invalid dailyHistory')
+        }
+        
+        // Check data consistency
+        const todayKey = new Date().toISOString().split('T')[0]
+        if (progress.dailyHistory[todayKey] !== undefined && 
+            progress.dailyHistory[todayKey] !== progress.dailyHits) {
+          issues.push('dailyHits and dailyHistory are out of sync')
+        }
+      }
+      
+      if (!user) {
+        issues.push('No user data found')
+      }
+      
+      return {
+        isValid: issues.length === 0,
+        issues
+      }
+    } catch (error) {
+      issues.push(`Validation error: ${error.message}`)
+      return {
+        isValid: false,
+        issues
+      }
     }
   }
 }

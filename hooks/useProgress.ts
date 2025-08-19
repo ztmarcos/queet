@@ -93,6 +93,29 @@ export function useProgress() {
     })
   }, [])
 
+  // Helper function to get today's date key
+  const getTodayKey = useCallback(() => {
+    return new Date().toISOString().split('T')[0]
+  }, [])
+
+  // Helper function to check if a date is today
+  const isToday = useCallback((dateString: string) => {
+    const today = new Date()
+    const date = new Date(dateString)
+    return today.toDateString() === date.toDateString()
+  }, [])
+
+  // Helper function to sync dailyHits with dailyHistory
+  const syncDailyHitsWithHistory = useCallback((currentProgress: ProgressData): ProgressData => {
+    const todayKey = getTodayKey()
+    const todayHits = currentProgress.dailyHistory[todayKey] || 0
+    
+    return {
+      ...currentProgress,
+      dailyHits: todayHits
+    }
+  }, [getTodayKey])
+
   const loadProgress = useCallback(async () => {
     try {
       setLoading(true)
@@ -126,15 +149,6 @@ export function useProgress() {
           }
         }
         
-        // Force clean all achievements if they exist (temporary fix)
-        if (savedProgress.achievements && savedProgress.achievements.length > 0) {
-          savedProgress = {
-            ...savedProgress,
-            achievements: []
-          }
-          progressStorage.set(savedProgress)
-        }
-        
         // Migrate existing data to include dailyHistory if missing
         if (!savedProgress.dailyHistory) {
           savedProgress = {
@@ -143,21 +157,10 @@ export function useProgress() {
           }
           progressStorage.set(savedProgress)
         }
-        
-        // Initialize dailyHistory with current dailyHits if it's empty for today
-        const today = new Date()
-        const todayKey = today.toISOString().split('T')[0]
-        if (!savedProgress.dailyHistory[todayKey] && savedProgress.dailyHits > 0) {
-          savedProgress = {
-            ...savedProgress,
-            dailyHistory: {
-              ...savedProgress.dailyHistory,
-              [todayKey]: savedProgress.dailyHits
-            }
-          }
-          progressStorage.set(savedProgress)
-        }
       }
+      
+      // Sync dailyHits with dailyHistory
+      savedProgress = syncDailyHitsWithHistory(savedProgress)
       
       setProgress(savedProgress)
       setLoading(false)
@@ -169,7 +172,7 @@ export function useProgress() {
       setLoading(false)
       setInitialized(true)
     }
-  }, [initialized])
+  }, [initialized, cleanDuplicateAchievements, syncDailyHitsWithHistory])
 
   useEffect(() => {
     if (!initialized) {
@@ -180,16 +183,45 @@ export function useProgress() {
   // Auto-backup every time progress changes
   useEffect(() => {
     if (progress) {
-      // Temporarily disable integrity check to fix loading issue
-      // const isIntegrityValid = dataManager.checkIntegrity()
-      // if (!isIntegrityValid) {
-      //   console.warn('Data integrity check failed')
-      // }
-      
       // Create backup reminder
       dataManager.createBackupReminder()
     }
   }, [progress])
+
+  // Auto-sync dailyHits with dailyHistory when day changes
+  useEffect(() => {
+    if (!progress) return
+
+    const checkAndSyncDailyData = () => {
+      const todayKey = getTodayKey()
+      const todayHits = progress.dailyHistory[todayKey] || 0
+      
+      // If dailyHits doesn't match today's history, sync them
+      if (progress.dailyHits !== todayHits) {
+        console.log('Syncing dailyHits with dailyHistory:', {
+          currentDailyHits: progress.dailyHits,
+          todayHitsInHistory: todayHits,
+          todayKey
+        })
+        
+        const updatedProgress = {
+          ...progress,
+          dailyHits: todayHits
+        }
+        
+        progressStorage.set(updatedProgress)
+        setProgress(updatedProgress)
+      }
+    }
+
+    // Check immediately
+    checkAndSyncDailyData()
+
+    // Set up interval to check every minute
+    const interval = setInterval(checkAndSyncDailyData, 60000)
+
+    return () => clearInterval(interval)
+  }, [progress, getTodayKey])
 
   const checkAchievements = useCallback(async (currentProgress: ProgressData) => {
     const newAchievements: Achievement[] = []
@@ -414,6 +446,7 @@ export function useProgress() {
 
     try {
       const today = new Date()
+      const todayKey = getTodayKey()
       const todayString = today.toDateString()
       const lastHitDateString = new Date(progress.lastHitDate).toDateString()
       const isNewDay = todayString !== lastHitDateString
@@ -440,7 +473,7 @@ export function useProgress() {
         lastHitDate: today.toISOString(),
         dailyHistory: {
           ...progress.dailyHistory,
-          [today.toISOString().split('T')[0]]: newDailyHits
+          [todayKey]: newDailyHits
         }
       }
 
@@ -457,13 +490,14 @@ export function useProgress() {
       console.error('Error adding smoking hit:', error)
       toast.error('Error al registrar hit')
     }
-  }, [progress])
+  }, [progress, getTodayKey])
 
   const subtractSmokingHit = useCallback(async () => {
     if (!progress) return
 
     try {
       const today = new Date()
+      const todayKey = getTodayKey()
       const todayString = today.toDateString()
       const lastHitDateString = new Date(progress.lastHitDate).toDateString()
       const isNewDay = todayString !== lastHitDateString
@@ -486,7 +520,7 @@ export function useProgress() {
         dailyHits: newDailyHits,
         dailyHistory: {
           ...progress.dailyHistory,
-          [today.toISOString().split('T')[0]]: newDailyHits
+          [todayKey]: newDailyHits
         }
       }
 
@@ -503,7 +537,7 @@ export function useProgress() {
       console.error('Error subtracting smoking hit:', error)
       toast.error('Error al restar hit')
     }
-  }, [progress])
+  }, [progress, getTodayKey])
 
   const resetEverything = useCallback(async () => {
     if (!progress) return
