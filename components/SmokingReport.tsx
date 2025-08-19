@@ -211,29 +211,34 @@ export default function SmokingReport() {
                 
                                   {/* Days Grid */}
                   <div className="flex flex-wrap gap-0.5 justify-start">
-                    {monthDays.map((day, dayIndex) => (
-                      <motion.div
-                        key={dayIndex}
-                        whileTap={{ scale: 0.9 }}
-                        className={`w-2.5 h-2.5 rounded-full ${day.color} cursor-pointer transition-all duration-300 shadow-sm ${
-                          hoveredDay === day ? 'ring-2 ring-yellow-400 shadow-lg scale-110' : ''
-                        } ${isSameDay(day.date, new Date()) ? 'ring-2 ring-blue-400' : ''}`}
-                        style={{
-                          backgroundColor: isSameDay(day.date, new Date()) && progress.dailyHits > 0 
-                            ? (progress.dailyHits >= 1 && progress.dailyHits <= 3 ? '#fbbf24' : 
-                               progress.dailyHits >= 4 && progress.dailyHits <= 6 ? '#10b981' :
-                               progress.dailyHits >= 7 && progress.dailyHits <= 9 ? '#f97316' :
-                               progress.dailyHits >= 10 ? '#ef4444' : '#475569')
-                            : undefined
-                        }}
-                        onMouseEnter={() => setHoveredDay(day)}
-                        onMouseLeave={() => setHoveredDay(null)}
-                        onTouchStart={() => setHoveredDay(day)}
-                        onTouchEnd={() => setHoveredDay(null)}
-                        onClick={() => setSelectedDay(day)}
-                        title={day.tooltip}
-                      />
-                    ))}
+                    {monthDays.map((day, dayIndex) => {
+                      const isToday = isSameDay(day.date, new Date())
+                      if (isToday) {
+                        console.log('Rendering today in calendar:', {
+                          date: day.date,
+                          hits: day.hits,
+                          color: day.color,
+                          tooltip: day.tooltip,
+                          isToday
+                        })
+                      }
+                      
+                      return (
+                        <motion.div
+                          key={dayIndex}
+                          whileTap={{ scale: 0.9 }}
+                          className={`w-2.5 h-2.5 rounded-full ${day.color} cursor-pointer transition-all duration-300 shadow-sm ${
+                            hoveredDay === day ? 'ring-2 ring-yellow-400 shadow-lg scale-110' : ''
+                          } ${isToday ? 'ring-2 ring-blue-400' : ''}`}
+                          onMouseEnter={() => setHoveredDay(day)}
+                          onMouseLeave={() => setHoveredDay(null)}
+                          onTouchStart={() => setHoveredDay(day)}
+                          onTouchEnd={() => setHoveredDay(null)}
+                          onClick={() => setSelectedDay(day)}
+                          title={day.tooltip}
+                        />
+                      )
+                    })}
                   </div>
               </div>
             )
