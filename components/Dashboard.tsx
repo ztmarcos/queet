@@ -174,6 +174,32 @@ export default function Dashboard() {
             >
               {t.dashboard.reset}
             </button>
+            
+            {/* Botón temporal de prueba - ELIMINAR DESPUÉS */}
+            <button
+              onClick={() => {
+                console.log('=== PRUEBA CAMBIO DE DÍA ===')
+                console.log('Datos actuales:', progress)
+                console.log('Daily History actual:', progress?.dailyHistory)
+                
+                // Simular que mañana el dailyHits se resetea pero el history se mantiene
+                const todayKey = new Date().toISOString().split('T')[0]
+                const todayHits = progress?.dailyHistory[todayKey] || 0
+                
+                console.log('Hoy:', todayKey)
+                console.log('Hits de hoy en history:', todayHits)
+                console.log('DailyHits actual:', progress?.dailyHits)
+                
+                if (progress?.dailyHits === todayHits) {
+                  toast.success('✅ Sistema funcionando correctamente - Los datos están sincronizados')
+                } else {
+                  toast.error('❌ Problema detectado - Los datos no están sincronizados')
+                }
+              }}
+              className="w-full py-2 px-4 bg-blue-600 text-white border-2 border-blue-600 font-mono uppercase tracking-wider text-xs font-bold hover:bg-blue-700 transition-all btn-touch"
+            >
+              🔍 PRUEBA SISTEMA
+            </button>
           </div>
         </motion.div>
 
