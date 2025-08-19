@@ -47,7 +47,10 @@ export default function SmokingReport() {
       let hits = 0
       const dateKey = format(day, 'yyyy-MM-dd')
       
-      if (isToday && isAfterStart) {
+      // Para el día actual, SIEMPRE considerar que es después del inicio
+      const shouldShowHits = isToday || isAfterStart
+      
+      if (isToday && shouldShowHits) {
         // Para hoy, SIEMPRE usar dailyHits (datos en tiempo real)
         hits = progress.dailyHits
         console.log('Today hits:', hits, 'from dailyHits:', progress.dailyHits)
@@ -58,7 +61,7 @@ export default function SmokingReport() {
       
       // Color coding based on hits
       let color = 'bg-slate-700' // No smoking / No data - Darker color
-      if (!isAfterStart) {
+      if (!shouldShowHits) {
         color = 'bg-gray-400' // Before start date - Lighter gray
       } else if (hits >= 1 && hits <= 3) {
         color = 'bg-yellow-400' // Grade 1: Yellow
@@ -71,7 +74,7 @@ export default function SmokingReport() {
       }
       
       let tooltip = ''
-      if (!isAfterStart) {
+      if (!shouldShowHits) {
         tooltip = `${format(day, 'EEEE, d MMMM yyyy', { locale })} - Antes del inicio`
       } else if (hits === 0) {
         tooltip = `${format(day, 'EEEE, d MMMM yyyy', { locale })} - No fumó`
@@ -89,6 +92,8 @@ export default function SmokingReport() {
       
       if (isToday) {
         console.log('Today data generated:', result)
+        console.log('Should show hits:', shouldShowHits)
+        console.log('Is after start:', isAfterStart)
       }
       
       return result
