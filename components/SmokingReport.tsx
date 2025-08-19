@@ -274,13 +274,6 @@ export default function SmokingReport() {
                     {isToday && ' (HOY)'}
                   </div>
                   
-                  {/* Debug info temporal */}
-                  {isToday && (
-                    <div className="text-xs font-mono uppercase tracking-wider text-yellow-400 mb-3 p-2 border border-yellow-400">
-                      DEBUG: dailyHits={progress.dailyHits} | history[{todayKey}]={progress.dailyHistory[todayKey] || 0}
-                    </div>
-                  )}
-                  
                   {/* Mostrar información adicional si es hoy */}
                   {isToday && (
                     <div className="text-xs font-mono uppercase tracking-wider text-white opacity-50 mb-3">
