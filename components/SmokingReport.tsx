@@ -262,6 +262,7 @@ export default function SmokingReport() {
             {(() => {
               const currentHits = getCurrentHitsForDay(selectedDay.date)
               const isToday = isSameDay(selectedDay.date, new Date())
+              const todayKey = format(new Date(), 'yyyy-MM-dd')
               
               return (
                 <>
@@ -272,6 +273,13 @@ export default function SmokingReport() {
                     {currentHits === 0 ? 'NO FUMÓ' : currentHits === 1 ? 'HIT' : 'HITS'}
                     {isToday && ' (HOY)'}
                   </div>
+                  
+                  {/* Debug info temporal */}
+                  {isToday && (
+                    <div className="text-xs font-mono uppercase tracking-wider text-yellow-400 mb-3 p-2 border border-yellow-400">
+                      DEBUG: dailyHits={progress.dailyHits} | history[{todayKey}]={progress.dailyHistory[todayKey] || 0}
+                    </div>
+                  )}
                   
                   {/* Mostrar información adicional si es hoy */}
                   {isToday && (
