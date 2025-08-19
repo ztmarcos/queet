@@ -48,9 +48,10 @@ export default function SmokingReport() {
       const dateKey = format(day, 'yyyy-MM-dd')
       
       // Para el día actual, SIEMPRE considerar que es después del inicio
+      // Si es hoy, siempre mostrar hits independientemente del startDate
       const shouldShowHits = isToday || isAfterStart
       
-      if (isToday && shouldShowHits) {
+      if (isToday) {
         // Para hoy, SIEMPRE usar dailyHits (datos en tiempo real)
         hits = progress.dailyHits
         console.log('Today hits:', hits, 'from dailyHits:', progress.dailyHits)
@@ -61,20 +62,32 @@ export default function SmokingReport() {
       
       // Color coding based on hits
       let color = 'bg-slate-700' // No smoking / No data - Darker color
-      if (!shouldShowHits) {
+      if (isToday || shouldShowHits) {
+        // Para hoy o días válidos, usar colores basados en hits
+        if (hits >= 1 && hits <= 3) {
+          color = 'bg-yellow-400' // Grade 1: Yellow
+        } else if (hits >= 4 && hits <= 6) {
+          color = 'bg-green-500' // Grade 2: Green  
+        } else if (hits >= 7 && hits <= 9) {
+          color = 'bg-orange-500' // Grade 3: Orange
+        } else if (hits >= 10) {
+          color = 'bg-red-500' // Grade 4: Red
+        } else {
+          color = 'bg-slate-700' // No hits
+        }
+      } else {
         color = 'bg-gray-400' // Before start date - Lighter gray
-      } else if (hits >= 1 && hits <= 3) {
-        color = 'bg-yellow-400' // Grade 1: Yellow
-      } else if (hits >= 4 && hits <= 6) {
-        color = 'bg-green-500' // Grade 2: Green  
-      } else if (hits >= 7 && hits <= 9) {
-        color = 'bg-orange-500' // Grade 3: Orange
-      } else if (hits >= 10) {
-        color = 'bg-red-500' // Grade 4: Red
       }
       
       let tooltip = ''
-      if (!shouldShowHits) {
+      if (isToday) {
+        // Para hoy, siempre mostrar tooltip con datos
+        if (hits === 0) {
+          tooltip = `${format(day, 'EEEE, d MMMM yyyy', { locale })} - No fumó (HOY)`
+        } else {
+          tooltip = `${format(day, 'EEEE, d MMMM yyyy', { locale })} - ${hits} ${hits === 1 ? 'hit' : 'hits'} (HOY)`
+        }
+      } else if (!shouldShowHits) {
         tooltip = `${format(day, 'EEEE, d MMMM yyyy', { locale })} - Antes del inicio`
       } else if (hits === 0) {
         tooltip = `${format(day, 'EEEE, d MMMM yyyy', { locale })} - No fumó`
