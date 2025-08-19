@@ -105,15 +105,22 @@ export function useProgress() {
     return today.toDateString() === date.toDateString()
   }, [])
 
-  // Helper function to sync dailyHits with dailyHistory
-  const syncDailyHitsWithHistory = useCallback((currentProgress: ProgressData): ProgressData => {
+  // Helper function to ensure daily tracking consistency
+  const ensureDailyTracking = useCallback((currentProgress: ProgressData): ProgressData => {
     const todayKey = getTodayKey()
-    const todayHits = currentProgress.dailyHistory[todayKey] || 0
     
-    return {
-      ...currentProgress,
-      dailyHits: todayHits
+    // Ensure today exists in dailyHistory
+    if (currentProgress.dailyHistory[todayKey] === undefined) {
+      return {
+        ...currentProgress,
+        dailyHistory: {
+          ...currentProgress.dailyHistory,
+          [todayKey]: currentProgress.dailyHits
+        }
+      }
     }
+    
+    return currentProgress
   }, [getTodayKey])
 
   const loadProgress = useCallback(async () => {
@@ -159,8 +166,8 @@ export function useProgress() {
         }
       }
       
-      // Sync dailyHits with dailyHistory
-      savedProgress = syncDailyHitsWithHistory(savedProgress)
+      // Ensure daily tracking consistency
+      savedProgress = ensureDailyTracking(savedProgress)
       
       setProgress(savedProgress)
       setLoading(false)
@@ -172,7 +179,7 @@ export function useProgress() {
       setLoading(false)
       setInitialized(true)
     }
-  }, [initialized, cleanDuplicateAchievements, syncDailyHitsWithHistory])
+  }, [initialized, cleanDuplicateAchievements, ensureDailyTracking])
 
   useEffect(() => {
     if (!initialized) {
@@ -187,41 +194,6 @@ export function useProgress() {
       dataManager.createBackupReminder()
     }
   }, [progress])
-
-  // Auto-sync dailyHits with dailyHistory when day changes
-  useEffect(() => {
-    if (!progress) return
-
-    const checkAndSyncDailyData = () => {
-      const todayKey = getTodayKey()
-      const todayHits = progress.dailyHistory[todayKey] || 0
-      
-      // If dailyHits doesn't match today's history, sync them
-      if (progress.dailyHits !== todayHits) {
-        console.log('Syncing dailyHits with dailyHistory:', {
-          currentDailyHits: progress.dailyHits,
-          todayHitsInHistory: todayHits,
-          todayKey
-        })
-        
-        const updatedProgress = {
-          ...progress,
-          dailyHits: todayHits
-        }
-        
-        progressStorage.set(updatedProgress)
-        setProgress(updatedProgress)
-      }
-    }
-
-    // Check immediately
-    checkAndSyncDailyData()
-
-    // Set up interval to check every minute
-    const interval = setInterval(checkAndSyncDailyData, 60000)
-
-    return () => clearInterval(interval)
-  }, [progress, getTodayKey])
 
   const checkAchievements = useCallback(async (currentProgress: ProgressData) => {
     const newAchievements: Achievement[] = []
