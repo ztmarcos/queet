@@ -200,6 +200,62 @@ export default function Dashboard() {
             >
               🔍 PRUEBA SISTEMA
             </button>
+            
+            {/* Simulación de cambio de día */}
+            <button
+              onClick={() => {
+                if (!progress) return
+                
+                console.log('=== SIMULACIÓN CAMBIO DE DÍA ===')
+                
+                // Datos actuales
+                const today = new Date()
+                const todayKey = today.toISOString().split('T')[0]
+                const currentDailyHits = progress.dailyHits
+                const currentHistory = progress.dailyHistory
+                
+                console.log('HOY:', todayKey)
+                console.log('Hits de hoy:', currentDailyHits)
+                console.log('Historial actual:', currentHistory)
+                
+                // Simular mañana
+                const tomorrow = new Date(today)
+                tomorrow.setDate(tomorrow.getDate() + 1)
+                const tomorrowKey = tomorrow.toISOString().split('T')[0]
+                
+                console.log('MAÑANA:', tomorrowKey)
+                console.log('DailyHits mañana será: 0')
+                console.log('Historial mañana será:', {
+                  ...currentHistory,
+                  [tomorrowKey]: 0
+                })
+                
+                // Mostrar qué pasará en el reporte de colores
+                const todayColor = currentDailyHits === 0 ? 'GRIS (No fumó)' :
+                                 currentDailyHits <= 3 ? 'AMARILLO (1-3 hits)' :
+                                 currentDailyHits <= 6 ? 'VERDE (4-6 hits)' :
+                                 currentDailyHits <= 9 ? 'NARANJA (7-9 hits)' :
+                                 'ROJO (10+ hits)'
+                
+                toast.success(`🎯 SIMULACIÓN MAÑANA:
+                
+HOY (${todayKey}): ${currentDailyHits} hits → ${todayColor}
+MAÑANA (${tomorrowKey}): 0 hits → GRIS (No fumó)
+
+✅ El color de HOY se mantendrá en el reporte!`, {
+                  duration: 8000,
+                  style: {
+                    whiteSpace: 'pre-line',
+                    fontSize: '12px'
+                  }
+                })
+                
+                console.log('RESULTADO: El color de hoy se mantendrá en el reporte mañana')
+              }}
+              className="w-full py-2 px-4 bg-purple-600 text-white border-2 border-purple-600 font-mono uppercase tracking-wider text-xs font-bold hover:bg-purple-700 transition-all btn-touch"
+            >
+              🎯 SIMULAR MAÑANA
+            </button>
           </div>
         </motion.div>
 
