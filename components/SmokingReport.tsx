@@ -42,13 +42,8 @@ export default function SmokingReport() {
       const dateKey = format(day, 'yyyy-MM-dd')
       
       if (isToday && isAfterStart) {
-        // Para hoy, usar el valor del dailyHistory si existe, sino dailyHits
-        const todayHits = progress.dailyHistory[dateKey]
-        if (todayHits !== undefined) {
-          hits = todayHits
-        } else {
-          hits = progress.dailyHits
-        }
+        // Para hoy, SIEMPRE usar dailyHits (datos en tiempo real)
+        hits = progress.dailyHits
       } else if (day < new Date() && isAfterStart) {
         // Para días pasados, usar los datos del dailyHistory
         hits = progress.dailyHistory[dateKey] || 0
@@ -100,11 +95,7 @@ export default function SmokingReport() {
     const dateKey = format(day, 'yyyy-MM-dd')
     
     if (isToday) {
-      // Para hoy, usar el valor del dailyHistory si existe, sino dailyHits
-      const todayHits = progress.dailyHistory[dateKey]
-      if (todayHits !== undefined) {
-        return todayHits
-      }
+      // Para hoy, SIEMPRE usar dailyHits (datos en tiempo real)
       return progress.dailyHits
     } else {
       // Para días pasados, usar dailyHistory
