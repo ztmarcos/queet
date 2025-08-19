@@ -418,17 +418,20 @@ export function useProgress() {
 
     try {
       const today = new Date()
-      const todayKey = getTodayKey()
       const todayString = today.toDateString()
+      const todayKey = today.toISOString().split('T')[0]
       const lastHitDateString = new Date(progress.lastHitDate).toDateString()
       const isNewDay = todayString !== lastHitDateString
       
       console.log('=== ADDING SMOKING HIT ===')
       console.log('Today:', todayString)
+      console.log('Today key:', todayKey)
       console.log('Last hit date:', lastHitDateString)
       console.log('Is new day:', isNewDay)
       console.log('Current dailyHits:', progress.dailyHits)
       console.log('Current smokingHits:', progress.smokingHits)
+      console.log('Current dailyHistory:', progress.dailyHistory)
+      console.log('Current dailyHistory for today:', progress.dailyHistory[todayKey])
       
       // Calculate new daily hits
       let newDailyHits = 1
@@ -452,17 +455,24 @@ export function useProgress() {
       console.log('Updated progress:', {
         dailyHits: updatedProgress.dailyHits,
         smokingHits: updatedProgress.smokingHits,
-        dailyHistory: updatedProgress.dailyHistory
+        dailyHistory: updatedProgress.dailyHistory,
+        dailyHistoryForToday: updatedProgress.dailyHistory[todayKey]
       })
 
+      // Save to localStorage
       progressStorage.set(updatedProgress)
+      console.log('Progress saved to localStorage')
+      
+      // Update state
       setProgress(updatedProgress)
+      console.log('State updated')
+      
       toast.success('Hit registrado')
     } catch (error) {
       console.error('Error adding smoking hit:', error)
       toast.error('Error al registrar hit')
     }
-  }, [progress, getTodayKey])
+  }, [progress])
 
   const subtractSmokingHit = useCallback(async () => {
     if (!progress) return
@@ -510,6 +520,26 @@ export function useProgress() {
       toast.error('Error al restar hit')
     }
   }, [progress, getTodayKey])
+
+  const forceUpdateProgress = useCallback(async () => {
+    if (!progress) return
+
+    try {
+      console.log('=== FORCE UPDATE PROGRESS ===')
+      console.log('Current progress:', progress)
+      
+      // Re-read from localStorage to ensure we have latest data
+      const savedProgress = progressStorage.get()
+      console.log('Saved progress from localStorage:', savedProgress)
+      
+      if (savedProgress) {
+        setProgress(savedProgress)
+        console.log('Progress state updated from localStorage')
+      }
+    } catch (error) {
+      console.error('Error force updating progress:', error)
+    }
+  }, [progress])
 
   const resetEverything = useCallback(async () => {
     if (!progress) return
@@ -595,5 +625,6 @@ export function useProgress() {
     reportWeedPurchase,
     autoUpdateStreak,
     resetEverything,
+    forceUpdateProgress,
   }
 }

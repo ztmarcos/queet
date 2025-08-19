@@ -11,7 +11,7 @@ import { es, enUS } from 'date-fns/locale'
 import toast from 'react-hot-toast'
 
 export default function Dashboard() {
-  const { progress, loading, updateStreak, addSmokingHit, subtractSmokingHit, resetAchievements, reportWeedPurchase, resetEverything } = useProgress()
+  const { progress, loading, updateStreak, addSmokingHit, subtractSmokingHit, resetAchievements, reportWeedPurchase, resetEverything, forceUpdateProgress } = useProgress()
   const { language } = useLanguage()
   const t = useTranslations(language)
   const [showResetConfirm, setShowResetConfirm] = useState(false)
@@ -173,6 +173,26 @@ export default function Dashboard() {
               className="w-full py-3 px-6 bg-black text-white border-2 border-white font-mono uppercase tracking-wider text-sm font-bold hover:bg-white hover:text-black transition-all btn-touch"
             >
               {t.dashboard.reset}
+            </button>
+            <button
+              onClick={() => {
+                console.log('=== DEBUG INFO ===')
+                console.log('Progress:', progress)
+                console.log('Daily History:', progress?.dailyHistory)
+                console.log('Today key:', new Date().toISOString().split('T')[0])
+                console.log('Today hits in history:', progress?.dailyHistory[new Date().toISOString().split('T')[0]])
+                toast.success('Debug info logged to console')
+              }}
+              className="w-full py-2 px-4 bg-blue-600 text-white border-2 border-blue-600 font-mono uppercase tracking-wider text-xs font-bold hover:bg-blue-700 transition-all btn-touch"
+            >
+              DEBUG INFO
+            </button>
+            
+            <button
+              onClick={forceUpdateProgress}
+              className="w-full py-2 px-4 bg-purple-600 text-white border-2 border-purple-600 font-mono uppercase tracking-wider text-xs font-bold hover:bg-purple-700 transition-all btn-touch"
+            >
+              FORCE UPDATE
             </button>
           </div>
         </motion.div>
