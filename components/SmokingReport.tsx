@@ -14,6 +14,7 @@ interface DayData {
   hits: number
   color: string
   tooltip: string
+  dateKey: string // Added dateKey to the interface
 }
 
 export default function SmokingReport() {
@@ -75,10 +76,32 @@ export default function SmokingReport() {
         date: day,
         hits,
         color,
-        tooltip
+        tooltip,
+        dateKey // Agregar dateKey para referencia
       }
     })
   }, [progress, locale])
+
+  // Función para obtener los hits actualizados de un día específico
+  const getCurrentHitsForDay = useCallback((day: Date): number => {
+    if (!progress) return 0
+    
+    const isToday = isSameDay(day, new Date())
+    const userStartDate = new Date(progress.startDate)
+    const isAfterStart = day >= userStartDate
+    
+    if (!isAfterStart) return 0
+    
+    const dateKey = format(day, 'yyyy-MM-dd')
+    
+    if (isToday) {
+      // Para hoy, usar dailyHits actual
+      return progress.dailyHits
+    } else {
+      // Para días pasados, usar dailyHistory
+      return progress.dailyHistory[dateKey] || 0
+    }
+  }, [progress])
 
   if (loading || !progress) {
     return (
@@ -234,12 +257,39 @@ export default function SmokingReport() {
             <h4 className="text-lg font-bold font-mono uppercase tracking-wider text-white mb-2">
               {format(selectedDay.date, 'EEEE, d MMMM yyyy', { locale }).toUpperCase()}
             </h4>
-            <div className="text-3xl font-bold font-mono text-white mb-2">
-              {selectedDay.hits}
-            </div>
-            <div className="text-sm font-mono uppercase tracking-wider text-white opacity-70">
-              {selectedDay.hits === 0 ? 'NO FUMÓ' : selectedDay.hits === 1 ? 'HIT' : 'HITS'}
-            </div>
+            
+            {/* Obtener hits actualizados para este día */}
+            {(() => {
+              const currentHits = getCurrentHitsForDay(selectedDay.date)
+              const isToday = isSameDay(selectedDay.date, new Date())
+              
+              return (
+                <>
+                  <div className="text-3xl font-bold font-mono text-white mb-2">
+                    {currentHits}
+                  </div>
+                  <div className="text-sm font-mono uppercase tracking-wider text-white opacity-70 mb-2">
+                    {currentHits === 0 ? 'NO FUMÓ' : currentHits === 1 ? 'HIT' : 'HITS'}
+                    {isToday && ' (HOY)'}
+                  </div>
+                  
+                  {/* Mostrar información adicional si es hoy */}
+                  {isToday && (
+                    <div className="text-xs font-mono uppercase tracking-wider text-white opacity-50 mb-3">
+                      Datos en tiempo real
+                    </div>
+                  )}
+                  
+                  {/* Mostrar diferencia si hay discrepancia */}
+                  {selectedDay.hits !== currentHits && (
+                    <div className="text-xs font-mono uppercase tracking-wider text-yellow-400 mb-3">
+                      Datos actualizados
+                    </div>
+                  )}
+                </>
+              )
+            })()}
+            
             <button
               onClick={() => setSelectedDay(null)}
               className="mt-3 px-4 py-2 bg-white text-black border-2 border-white font-mono uppercase tracking-wider text-xs font-bold hover:bg-black hover:text-white transition-all"
