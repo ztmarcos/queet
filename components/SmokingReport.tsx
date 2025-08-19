@@ -8,6 +8,7 @@ import { useLanguage } from '@/hooks/useLanguage'
 import { useTranslations } from '@/lib/i18n'
 import { format, startOfYear, endOfYear, eachDayOfInterval, isSameDay } from 'date-fns'
 import { es, enUS } from 'date-fns/locale'
+import { toast } from 'react-hot-toast'
 
 interface DayData {
   date: Date
@@ -29,6 +30,11 @@ export default function SmokingReport() {
   const generateYearData = useCallback((): DayData[] => {
     if (!progress) return []
     
+    console.log('=== GENERATING YEAR DATA ===')
+    console.log('Progress received:', progress)
+    console.log('DailyHits:', progress.dailyHits)
+    console.log('DailyHistory:', progress.dailyHistory)
+    
     const startDate = startOfYear(new Date())
     const endDate = endOfYear(new Date())
     const days = eachDayOfInterval({ start: startDate, end: endDate })
@@ -44,6 +50,7 @@ export default function SmokingReport() {
       if (isToday && isAfterStart) {
         // Para hoy, SIEMPRE usar dailyHits (datos en tiempo real)
         hits = progress.dailyHits
+        console.log('Today hits:', hits, 'from dailyHits:', progress.dailyHits)
       } else if (day < new Date() && isAfterStart) {
         // Para días pasados, usar los datos del dailyHistory
         hits = progress.dailyHistory[dateKey] || 0
@@ -72,13 +79,19 @@ export default function SmokingReport() {
         tooltip = `${format(day, 'EEEE, d MMMM yyyy', { locale })} - ${hits} ${hits === 1 ? 'hit' : 'hits'}`
       }
       
-      return {
+      const result = {
         date: day,
         hits,
         color,
         tooltip,
         dateKey // Agregar dateKey para referencia
       }
+      
+      if (isToday) {
+        console.log('Today data generated:', result)
+      }
+      
+      return result
     })
   }, [progress, locale])
 
@@ -145,6 +158,23 @@ export default function SmokingReport() {
             <div className="text-xs font-mono uppercase tracking-wider">HITS HOY</div>
           </div>
         </div>
+        
+        <button
+          onClick={() => {
+            console.log('=== SMOKING REPORT DEBUG ===')
+            console.log('Progress:', progress)
+            console.log('DailyHits:', progress.dailyHits)
+            console.log('DailyHistory:', progress.dailyHistory)
+            console.log('Today key:', new Date().toISOString().split('T')[0])
+            console.log('Today in history:', progress.dailyHistory[new Date().toISOString().split('T')[0]])
+            console.log('Year data:', yearData)
+            console.log('Today data:', yearData.find(day => isSameDay(day.date, new Date())))
+            toast.success('Smoking Report debug logged')
+          }}
+          className="w-full mt-4 py-2 px-4 bg-blue-600 text-white border-2 border-blue-600 font-mono uppercase tracking-wider text-xs font-bold hover:bg-blue-700 transition-all btn-touch"
+        >
+          DEBUG SMOKING REPORT
+        </button>
       </motion.div>
 
       {/* Year Grid */}
