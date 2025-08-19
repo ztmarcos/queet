@@ -90,17 +90,17 @@ export const progressStorage = {
       localStorage.setItem(STORAGE_KEYS.PROGRESS, JSON.stringify(validated))
     } catch (error) {
       console.error('Error saving progress to localStorage:', error)
-      // Try to save a backup of the current data
-      try {
-        const backup = {
-          ...progress,
-          _backupDate: new Date().toISOString(),
-          _error: error.message
-        }
-        localStorage.setItem(STORAGE_KEYS.PROGRESS + '_backup', JSON.stringify(backup))
-      } catch (backupError) {
-        console.error('Failed to create backup:', backupError)
-      }
+             // Try to save a backup of the current data
+       try {
+         const backup = {
+           ...progress,
+           _backupDate: new Date().toISOString(),
+           _error: error instanceof Error ? error.message : 'Unknown error'
+         }
+         localStorage.setItem(STORAGE_KEYS.PROGRESS + '_backup', JSON.stringify(backup))
+       } catch (backupError: any) {
+         console.error('Failed to create backup:', backupError)
+       }
     }
   },
 
@@ -524,8 +524,8 @@ export const dataManager = {
         isValid: issues.length === 0,
         issues
       }
-    } catch (error) {
-      issues.push(`Validation error: ${error.message}`)
+    } catch (error: any) {
+      issues.push(`Validation error: ${error instanceof Error ? error.message : 'Unknown error'}`)
       return {
         isValid: false,
         issues
