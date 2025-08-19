@@ -146,13 +146,6 @@ export default function Dashboard() {
           
           <div className="flex flex-col space-y-3">
             <button
-              onClick={handleUpdate}
-              className="w-full py-4 px-6 bg-white text-black border-2 border-white font-mono uppercase tracking-wider text-lg font-bold hover:bg-black hover:text-white transition-all btn-touch"
-            >
-              {t.dashboard.update}
-            </button>
-            
-            <button
               onClick={addSmokingHit}
               className="w-full py-3 px-6 bg-green-600 text-white border-2 border-green-600 font-mono uppercase tracking-wider text-sm font-bold hover:bg-green-700 transition-all btn-touch"
             >
