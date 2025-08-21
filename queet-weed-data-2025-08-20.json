@@ -1,0 +1,33 @@
+{
+  "progress": {
+    "startDate": "2025-08-19T19:04:52.647Z",
+    "currentStreak": 0,
+    "longestStreak": 0,
+    "totalDays": 0,
+    "lastResetDate": "2025-08-19T19:04:52.647Z",
+    "smokingHits": 5,
+    "dailyHits": 1,
+    "lastHitDate": "2025-08-20T18:04:20.006Z",
+    "weedPurchases": 1,
+    "totalMoneySpent": 685,
+    "lastPurchaseDate": "2025-08-19T20:04:11.921Z",
+    "triggers": [],
+    "achievements": [],
+    "dailyHistory": {
+      "2025-08-19": 4,
+      "2025-08-20": 1
+    }
+  },
+  "user": {
+    "id": "local-user-1755713383891",
+    "email": "user@queet.app",
+    "createdAt": "2025-08-20T18:09:43.891Z"
+  },
+  "settings": {
+    "notifications": true,
+    "darkMode": false,
+    "language": "es"
+  },
+  "exportDate": "2025-08-20T18:09:45.568Z",
+  "version": "1.0.0"
+}

@@ -9,6 +9,7 @@ import { useTranslations } from '@/lib/i18n'
 import { format, startOfYear, endOfYear, eachDayOfInterval, isSameDay } from 'date-fns'
 import { es, enUS } from 'date-fns/locale'
 import { toast } from 'react-hot-toast'
+import { progressStorage, userStorage, settingsStorage } from '@/lib/localStorage'
 
 interface DayData {
   date: Date
@@ -58,6 +59,10 @@ export default function SmokingReport() {
       } else if (day < new Date() && isAfterStart) {
         // Para días pasados, usar los datos del dailyHistory
         hits = progress.dailyHistory[dateKey] || 0
+        // Debug para días pasados
+        if (hits > 0) {
+          console.log(`Past day ${dateKey} has ${hits} hits from dailyHistory`)
+        }
       }
       
       // Color coding based on hits
@@ -177,7 +182,7 @@ export default function SmokingReport() {
           </div>
         </div>
         
-        <button
+        {/* <button
           onClick={() => {
             console.log('=== SMOKING REPORT DEBUG ===')
             console.log('Progress:', progress)
@@ -185,13 +190,291 @@ export default function SmokingReport() {
             console.log('DailyHistory:', progress.dailyHistory)
             console.log('Today key:', new Date().toISOString().split('T')[0])
             console.log('Today in history:', progress.dailyHistory[new Date().toISOString().split('T')[0]])
+            
+            // Debug específico para el día anterior (martes 19 de agosto)
+            const yesterdayKey = '2025-08-19'
+            console.log('Yesterday key:', yesterdayKey)
+            console.log('Yesterday in history:', progress.dailyHistory[yesterdayKey])
+            
+            // Debug para todos los días con hits
+            const daysWithHits = Object.entries(progress.dailyHistory).filter(([key, hits]) => hits > 0)
+            console.log('All days with hits:', daysWithHits)
+            
             console.log('Year data:', yearData)
             console.log('Today data:', yearData.find(day => isSameDay(day.date, new Date())))
+            console.log('Yesterday data:', yearData.find(day => day.dateKey === yesterdayKey))
             toast.success('Smoking Report debug logged')
           }}
           className="w-full mt-4 py-2 px-4 bg-blue-600 text-white border-2 border-blue-600 font-mono uppercase tracking-wider text-xs font-bold hover:bg-blue-700 transition-all btn-touch"
         >
           DEBUG SMOKING REPORT
+        </button> */}
+        
+        {/* <button
+          onClick={() => {
+            console.log('=== FIX START DATE DEBUG ===')
+            console.log('Current startDate:', progress.startDate)
+            console.log('StartDate as Date:', new Date(progress.startDate))
+            
+            // Verificar si la fecha de inicio es muy reciente
+            const startDate = new Date(progress.startDate)
+            const yesterday = new Date('2025-08-19')
+            const isStartDateAfterYesterday = startDate > yesterday
+            
+            console.log('Yesterday date:', yesterday)
+            console.log('Is startDate after yesterday:', isStartDateAfterYesterday)
+            
+            if (isStartDateAfterYesterday) {
+              console.log('PROBLEM: Start date is after yesterday, this would hide yesterday\'s data')
+              toast.error('Fecha de inicio muy reciente - oculta datos anteriores')
+            } else {
+              console.log('Start date looks correct')
+              toast.success('Fecha de inicio correcta')
+            }
+          }}
+          className="w-full mt-2 py-2 px-4 bg-red-600 text-white border-2 border-red-600 font-mono uppercase tracking-wider text-xs font-bold hover:bg-red-700 transition-all btn-touch"
+        >
+          CHECK START DATE
+        </button> */}
+        
+        {/* <button
+          onClick={() => {
+            console.log('=== FIX START DATE ===')
+            
+            // Encontrar la fecha más antigua en dailyHistory
+            const datesWithData = Object.keys(progress.dailyHistory).filter(key => progress.dailyHistory[key] > 0)
+            if (datesWithData.length > 0) {
+              const oldestDate = datesWithData.sort()[0]
+              console.log('Oldest date with data:', oldestDate)
+              
+              // Actualizar la fecha de inicio para incluir todos los datos
+              const newStartDate = new Date(oldestDate)
+              newStartDate.setDate(newStartDate.getDate() - 1) // Un día antes del primer dato
+              
+              console.log('New start date:', newStartDate.toISOString())
+              
+              // Actualizar el progreso
+              const updatedProgress = {
+                ...progress,
+                startDate: newStartDate.toISOString()
+              }
+              
+              // Guardar en localStorage
+              progressStorage.set(updatedProgress)
+              
+              console.log('Start date fixed')
+              toast.success('Fecha de inicio corregida')
+              
+              // Recargar la página para aplicar los cambios
+              setTimeout(() => {
+                window.location.reload()
+              }, 1000)
+            } else {
+              toast.error('No hay datos históricos para corregir')
+            }
+          }}
+          className="w-full mt-2 py-2 px-4 bg-green-600 text-white border-2 border-green-600 font-mono uppercase tracking-wider text-xs font-bold hover:bg-green-700 transition-all btn-touch"
+        >
+          FIX START DATE
+        </button> */}
+        
+        {/* <button
+          onClick={() => {
+            console.log('=== COMPLETE DIAGNOSTIC ===')
+            console.log('=== PROGRESS DATA ===')
+            console.log('Progress object:', progress)
+            console.log('Start date:', progress.startDate)
+            console.log('Start date as Date:', new Date(progress.startDate))
+            console.log('Daily hits:', progress.dailyHits)
+            console.log('Smoking hits:', progress.smokingHits)
+            
+            console.log('=== DAILY HISTORY ===')
+            console.log('Daily history:', progress.dailyHistory)
+            console.log('Daily history keys:', Object.keys(progress.dailyHistory))
+            console.log('Daily history entries:', Object.entries(progress.dailyHistory))
+            
+            console.log('=== DATE ANALYSIS ===')
+            const today = new Date()
+            const yesterday = new Date('2025-08-19')
+            const startDate = new Date(progress.startDate)
+            
+            console.log('Today:', today.toISOString())
+            console.log('Yesterday:', yesterday.toISOString())
+            console.log('Start date:', startDate.toISOString())
+            console.log('Is yesterday after start?', yesterday >= startDate)
+            console.log('Is today after start?', today >= startDate)
+            
+            console.log('=== YEAR DATA ANALYSIS ===')
+            const todayKey = today.toISOString().split('T')[0]
+            const yesterdayKey = '2025-08-19'
+            
+            console.log('Today key:', todayKey)
+            console.log('Yesterday key:', yesterdayKey)
+            console.log('Today in history:', progress.dailyHistory[todayKey])
+            console.log('Yesterday in history:', progress.dailyHistory[yesterdayKey])
+            
+            // Buscar el día de ayer en yearData
+            const yesterdayInYearData = yearData.find(day => day.dateKey === yesterdayKey)
+            console.log('Yesterday in yearData:', yesterdayInYearData)
+            
+            console.log('=== ALL DAYS WITH HITS ===')
+            const daysWithHits = Object.entries(progress.dailyHistory).filter(([key, hits]) => hits > 0)
+            console.log('Days with hits:', daysWithHits)
+            
+            toast.success('Diagnóstico completo en consola')
+          }}
+          className="w-full mt-2 py-2 px-4 bg-purple-600 text-white border-2 border-purple-600 font-mono uppercase tracking-wider text-xs font-bold hover:bg-purple-700 transition-all btn-touch"
+        >
+          COMPLETE DIAGNOSTIC
+        </button> */}
+        
+        <button
+          onClick={() => {
+            console.log('=== AUTO REPAIR ===')
+            
+            // Detectar problemas comunes
+            const problems: string[] = []
+            const fixes: (() => any)[] = []
+            
+            // 1. Verificar si la fecha de inicio es muy reciente
+            const startDate = new Date(progress.startDate)
+            const datesWithData = Object.keys(progress.dailyHistory).filter(key => progress.dailyHistory[key] > 0)
+            
+            if (datesWithData.length > 0) {
+              const oldestDate = new Date(datesWithData.sort()[0])
+              if (startDate > oldestDate) {
+                problems.push('Fecha de inicio después del primer dato')
+                fixes.push(() => {
+                  const newStartDate = new Date(oldestDate)
+                  newStartDate.setDate(newStartDate.getDate() - 1)
+                  return { startDate: newStartDate.toISOString() }
+                })
+              }
+            }
+            
+            // 2. Verificar si hay inconsistencias en dailyHistory
+            const todayKey = new Date().toISOString().split('T')[0]
+            if (progress.dailyHistory[todayKey] !== undefined && 
+                progress.dailyHistory[todayKey] !== progress.dailyHits) {
+              problems.push('dailyHits y dailyHistory no coinciden para hoy')
+              fixes.push(() => {
+                return {
+                  dailyHistory: {
+                    ...progress.dailyHistory,
+                    [todayKey]: progress.dailyHits
+                  }
+                }
+              })
+            }
+            
+            // 3. Verificar si faltan entradas en dailyHistory
+            if (progress.dailyHits > 0 && progress.dailyHistory[todayKey] === undefined) {
+              problems.push('Falta entrada de hoy en dailyHistory')
+              fixes.push(() => {
+                return {
+                  dailyHistory: {
+                    ...progress.dailyHistory,
+                    [todayKey]: progress.dailyHits
+                  }
+                }
+              })
+            }
+            
+            console.log('Problemas detectados:', problems)
+            
+            if (problems.length > 0) {
+              // Aplicar todas las correcciones
+              let updatedProgress = { ...progress }
+              
+              fixes.forEach((fix, index) => {
+                console.log(`Aplicando corrección ${index + 1}:`, problems[index])
+                const fixData = fix()
+                updatedProgress = { ...updatedProgress, ...fixData }
+              })
+              
+              // Guardar progreso corregido
+              progressStorage.set(updatedProgress)
+              
+              console.log('Progreso corregido:', updatedProgress)
+              toast.success(`${problems.length} problema(s) corregido(s)`)
+              
+              // Recargar página
+              setTimeout(() => {
+                window.location.reload()
+              }, 1000)
+            } else {
+              console.log('No se detectaron problemas')
+              toast.success('No se detectaron problemas')
+            }
+          }}
+          className="w-full mt-2 py-2 px-4 bg-orange-600 text-white border-2 border-orange-600 font-mono uppercase tracking-wider text-xs font-bold hover:bg-orange-700 transition-all btn-touch"
+        >
+          AUTO REPAIR
+        </button>
+        
+        <button
+          onClick={() => {
+            console.log('=== IMPORT USER DATA ===')
+            
+            // Datos del usuario
+            const userData = {
+              "progress": {
+                "startDate": "2025-08-18T00:00:00.000Z", // Corregido: un día antes del primer dato
+                "currentStreak": 0,
+                "longestStreak": 0,
+                "totalDays": 0,
+                "lastResetDate": "2025-08-19T19:04:52.647Z",
+                "smokingHits": 5,
+                "dailyHits": 1,
+                "lastHitDate": "2025-08-20T18:04:20.006Z",
+                "weedPurchases": 1,
+                "totalMoneySpent": 685,
+                "lastPurchaseDate": "2025-08-19T20:04:11.921Z",
+                "triggers": [],
+                "achievements": [],
+                "dailyHistory": {
+                  "2025-08-19": 4,
+                  "2025-08-20": 1
+                }
+              },
+              "user": {
+                "id": "local-user-1755713383891",
+                "email": "user@queet.app",
+                "createdAt": "2025-08-20T18:09:43.891Z"
+              },
+              "settings": {
+                "notifications": true,
+                "darkMode": false,
+                "language": "es" as "es"
+              }
+            }
+            
+            console.log('Importando datos del usuario...')
+            console.log('Datos a importar:', userData)
+            
+            // Importar progreso
+            progressStorage.set(userData.progress)
+            
+            // Importar usuario
+            userStorage.set(userData.user)
+            
+            // Importar configuración
+            settingsStorage.set(userData.settings)
+            
+            console.log('Datos importados correctamente')
+            console.log('Fecha de inicio corregida a:', userData.progress.startDate)
+            console.log('Esto permitirá mostrar los datos del 19 de agosto')
+            
+            toast.success('Datos importados y fecha corregida')
+            
+            // Recargar página
+            setTimeout(() => {
+              window.location.reload()
+            }, 1000)
+          }}
+          className="w-full mt-2 py-2 px-4 bg-yellow-600 text-white border-2 border-yellow-600 font-mono uppercase tracking-wider text-xs font-bold hover:bg-yellow-700 transition-all btn-touch"
+        >
+          IMPORT USER DATA
         </button>
       </motion.div>
 
