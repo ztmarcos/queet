@@ -328,91 +328,9 @@ export default function SmokingReport() {
           COMPLETE DIAGNOSTIC
         </button> */}
         
-        <button
-          onClick={() => {
-            console.log('=== AUTO REPAIR ===')
-            
-            // Detectar problemas comunes
-            const problems: string[] = []
-            const fixes: (() => any)[] = []
-            
-            // 1. Verificar si la fecha de inicio es muy reciente
-            const startDate = new Date(progress.startDate)
-            const datesWithData = Object.keys(progress.dailyHistory).filter(key => progress.dailyHistory[key] > 0)
-            
-            if (datesWithData.length > 0) {
-              const oldestDate = new Date(datesWithData.sort()[0])
-              if (startDate > oldestDate) {
-                problems.push('Fecha de inicio después del primer dato')
-                fixes.push(() => {
-                  const newStartDate = new Date(oldestDate)
-                  newStartDate.setDate(newStartDate.getDate() - 1)
-                  return { startDate: newStartDate.toISOString() }
-                })
-              }
-            }
-            
-            // 2. Verificar si hay inconsistencias en dailyHistory
-            const todayKey = new Date().toISOString().split('T')[0]
-            if (progress.dailyHistory[todayKey] !== undefined && 
-                progress.dailyHistory[todayKey] !== progress.dailyHits) {
-              problems.push('dailyHits y dailyHistory no coinciden para hoy')
-              fixes.push(() => {
-                return {
-                  dailyHistory: {
-                    ...progress.dailyHistory,
-                    [todayKey]: progress.dailyHits
-                  }
-                }
-              })
-            }
-            
-            // 3. Verificar si faltan entradas en dailyHistory
-            if (progress.dailyHits > 0 && progress.dailyHistory[todayKey] === undefined) {
-              problems.push('Falta entrada de hoy en dailyHistory')
-              fixes.push(() => {
-                return {
-                  dailyHistory: {
-                    ...progress.dailyHistory,
-                    [todayKey]: progress.dailyHits
-                  }
-                }
-              })
-            }
-            
-            console.log('Problemas detectados:', problems)
-            
-            if (problems.length > 0) {
-              // Aplicar todas las correcciones
-              let updatedProgress = { ...progress }
-              
-              fixes.forEach((fix, index) => {
-                console.log(`Aplicando corrección ${index + 1}:`, problems[index])
-                const fixData = fix()
-                updatedProgress = { ...updatedProgress, ...fixData }
-              })
-              
-              // Guardar progreso corregido
-              progressStorage.set(updatedProgress)
-              
-              console.log('Progreso corregido:', updatedProgress)
-              toast.success(`${problems.length} problema(s) corregido(s)`)
-              
-              // Recargar página
-              setTimeout(() => {
-                window.location.reload()
-              }, 1000)
-            } else {
-              console.log('No se detectaron problemas')
-              toast.success('No se detectaron problemas')
-            }
-          }}
-          className="w-full mt-2 py-2 px-4 bg-orange-600 text-white border-2 border-orange-600 font-mono uppercase tracking-wider text-xs font-bold hover:bg-orange-700 transition-all btn-touch"
-        >
-          AUTO REPAIR
-        </button>
+
         
-        <button
+        {/* <button
           onClick={() => {
             console.log('=== IMPORT USER DATA ===')
             
@@ -475,7 +393,7 @@ export default function SmokingReport() {
           className="w-full mt-2 py-2 px-4 bg-yellow-600 text-white border-2 border-yellow-600 font-mono uppercase tracking-wider text-xs font-bold hover:bg-yellow-700 transition-all btn-touch"
         >
           IMPORT USER DATA
-        </button>
+        </button> */}
       </motion.div>
 
       {/* Year Grid */}
