@@ -512,23 +512,26 @@ export default function SmokingReport() {
               {format(selectedDay.date, 'EEEE, d MMMM yyyy', { locale }).toUpperCase()}
             </h4>
             
-            {/* Usar los datos del selectedDay que ya están correctos */}
+            {/* Recalcular hits en tiempo real para el día seleccionado */}
             {(() => {
               const isToday = isSameDay(selectedDay.date, new Date())
+              const realTimeHits = getCurrentHitsForDay(selectedDay.date)
               
               console.log('Selected day info:', {
                 selectedDay,
-                hits: selectedDay.hits,
-                isToday
+                originalHits: selectedDay.hits,
+                realTimeHits: realTimeHits,
+                isToday,
+                dateKey: selectedDay.dateKey
               })
               
               return (
                 <>
                   <div className="text-3xl font-bold font-mono text-white mb-2">
-                    {selectedDay.hits}
+                    {realTimeHits}
                   </div>
                   <div className="text-sm font-mono uppercase tracking-wider text-white opacity-70 mb-2">
-                    {selectedDay.hits === 0 ? 'NO FUMÓ' : selectedDay.hits === 1 ? 'HIT' : 'HITS'}
+                    {realTimeHits === 0 ? 'NO FUMÓ' : realTimeHits === 1 ? 'HIT' : 'HITS'}
                     {isToday && ' (HOY)'}
                   </div>
                   
@@ -541,7 +544,7 @@ export default function SmokingReport() {
                   
                   {/* Mostrar información de debug */}
                   <div className="text-xs font-mono uppercase tracking-wider text-blue-400 mb-3">
-                    Color: {selectedDay.color} | Tooltip: {selectedDay.tooltip}
+                    Original: {selectedDay.hits} | Real: {realTimeHits} | Key: {selectedDay.dateKey}
                   </div>
                 </>
               )
