@@ -418,45 +418,62 @@ export function useProgress() {
 
     try {
       const today = new Date()
-      const todayString = today.toDateString()
       const todayKey = today.toISOString().split('T')[0]
-      const lastHitDateString = new Date(progress.lastHitDate).toDateString()
-      const isNewDay = todayString !== lastHitDateString
+      const lastHitDate = new Date(progress.lastHitDate)
+      const lastHitKey = lastHitDate.toISOString().split('T')[0]
+      const isNewDay = todayKey !== lastHitKey
       
       console.log('=== ADDING SMOKING HIT ===')
-      console.log('Today:', todayString)
       console.log('Today key:', todayKey)
-      console.log('Last hit date:', lastHitDateString)
+      console.log('Last hit key:', lastHitKey)
       console.log('Is new day:', isNewDay)
       console.log('Current dailyHits:', progress.dailyHits)
       console.log('Current smokingHits:', progress.smokingHits)
       console.log('Current dailyHistory:', progress.dailyHistory)
       console.log('Current dailyHistory for today:', progress.dailyHistory[todayKey])
       
-      // Calculate new daily hits
-      let newDailyHits = 1
-      if (!isNewDay) {
+      // Calculate new daily hits for today
+      let newDailyHits
+      if (isNewDay) {
+        // Si es un día nuevo, empezar con 1 hit para hoy
+        // Pero PRIMERO guardar los hits del día anterior si no están guardados
+        if (progress.dailyHits > 0 && !progress.dailyHistory[lastHitKey]) {
+          console.log(`Guardando ${progress.dailyHits} hits del día anterior (${lastHitKey})`)
+        }
+        newDailyHits = 1
+      } else {
+        // Si es el mismo día, incrementar los hits de hoy
         newDailyHits = progress.dailyHits + 1
       }
       
       console.log('New dailyHits will be:', newDailyHits)
+      
+      // Prepare updated daily history
+      let updatedDailyHistory = { ...progress.dailyHistory }
+      
+      // Si es día nuevo Y había hits ayer, asegurar que se guarden
+      if (isNewDay && progress.dailyHits > 0) {
+        updatedDailyHistory[lastHitKey] = progress.dailyHits
+        console.log(`Guardando hits del día anterior: ${lastHitKey} = ${progress.dailyHits}`)
+      }
+      
+      // Actualizar hits de hoy
+      updatedDailyHistory[todayKey] = newDailyHits
       
       const updatedProgress = {
         ...progress,
         smokingHits: progress.smokingHits + 1,
         dailyHits: newDailyHits,
         lastHitDate: today.toISOString(),
-        dailyHistory: {
-          ...progress.dailyHistory,
-          [todayKey]: newDailyHits
-        }
+        dailyHistory: updatedDailyHistory
       }
 
       console.log('Updated progress:', {
         dailyHits: updatedProgress.dailyHits,
         smokingHits: updatedProgress.smokingHits,
         dailyHistory: updatedProgress.dailyHistory,
-        dailyHistoryForToday: updatedProgress.dailyHistory[todayKey]
+        dailyHistoryForToday: updatedProgress.dailyHistory[todayKey],
+        dailyHistoryForYesterday: updatedProgress.dailyHistory[lastHitKey]
       })
 
       // Save to localStorage
@@ -479,20 +496,22 @@ export function useProgress() {
 
     try {
       const today = new Date()
-      const todayKey = getTodayKey()
-      const todayString = today.toDateString()
-      const lastHitDateString = new Date(progress.lastHitDate).toDateString()
-      const isNewDay = todayString !== lastHitDateString
+      const todayKey = today.toISOString().split('T')[0]
       
       console.log('=== SUBTRACTING SMOKING HIT ===')
-      console.log('Today:', todayString)
-      console.log('Last hit date:', lastHitDateString)
-      console.log('Is new day:', isNewDay)
+      console.log('Today key:', todayKey)
       console.log('Current dailyHits:', progress.dailyHits)
       console.log('Current smokingHits:', progress.smokingHits)
+      console.log('Current dailyHistory for today:', progress.dailyHistory[todayKey])
       
-      // Calculate new daily hits
-      let newDailyHits = Math.max(0, progress.dailyHits - 1)
+      // Only subtract if we have hits to subtract
+      if (progress.dailyHits <= 0) {
+        toast.error('No hay hits para restar hoy')
+        return
+      }
+      
+      // Calculate new daily hits for today
+      const newDailyHits = Math.max(0, progress.dailyHits - 1)
       
       console.log('New dailyHits will be:', newDailyHits)
       
@@ -509,7 +528,8 @@ export function useProgress() {
       console.log('Updated progress:', {
         dailyHits: updatedProgress.dailyHits,
         smokingHits: updatedProgress.smokingHits,
-        dailyHistory: updatedProgress.dailyHistory
+        dailyHistory: updatedProgress.dailyHistory,
+        dailyHistoryForToday: updatedProgress.dailyHistory[todayKey]
       })
 
       progressStorage.set(updatedProgress)
